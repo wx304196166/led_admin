@@ -39,27 +39,50 @@ export const constantRouterMap = [
   },
 
   {
-    path: '/example',
+    path: '/products',
     component: Layout,
-    redirect: '/example/table',
-    name: 'Example',
-    meta: { title: 'Example', icon: 'example' },
+    redirect: '/product/label',
+    name: 'products',
+    meta: { title: '产品维护', icon: 'nested' },
     children: [
       {
-        path: 'table',
-        name: 'Table',
-        component: () => import('@/views/table/index'),
-        meta: { title: 'Table', icon: 'table' }
+        path: 'classification',
+        name: 'Classification',
+        component: () => import('@/views/classification/index'),
+        meta: { title: '分类管理' }
       },
       {
-        path: 'tree',
-        name: 'Tree',
-        component: () => import('@/views/tree/index'),
-        meta: { title: 'Tree', icon: 'tree' }
+        path: 'label',
+        name: 'Label',
+        component: () => import('@/views/label/index'),
+        meta: { title: '标签管理' }
+      },
+      {
+        path: 'brand',
+        name: 'Brand',
+        component: () => import('@/views/brand/index'),
+        meta: { title: '品牌管理' }
+      },      
+      {
+        path: 'product',
+        name: 'Product',
+        component: () => import('@/views/product/index'),
+        meta: { title: '产品管理' }
       }
     ]
   },
-
+  {
+    path: '/integration',
+    component: Layout,
+    children: [
+      {
+        path: 'index',
+        name: 'maintenance',
+        component: () => import('@/views/integration/index'),
+        meta: { title: '集成方案', icon: 'form' }
+      }
+    ]
+  },
   {
     path: '/maintenance',
     component: Layout,
@@ -68,7 +91,7 @@ export const constantRouterMap = [
         path: 'index',
         name: 'maintenance',
         component: () => import('@/views/maintenance/index'),
-        meta: { title: '维保管理', icon: 'form' }
+        meta: { title: '维保管理', icon: 'table' }
       }
     ]
   },  
