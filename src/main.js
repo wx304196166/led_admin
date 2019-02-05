@@ -15,7 +15,9 @@ import store from './store'
 import '@/icons' // icon
 import '@/permission' // permission control
 
-Vue.use(ElementUI)
+Vue.use(ElementUI, {
+  size: 'medium'
+})
 
 Vue.config.productionTip = false
 
