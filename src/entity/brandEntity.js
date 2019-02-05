@@ -11,9 +11,9 @@ const brandInfo = {
     // 备注
     remark: '',
     // 修改用户id
-    modificationUserId: '',
+    modification_user_id: '',
     // 修改用户类型
-    modificationUserType: 0
+    modification_user_type: 0
   },
   tableColumn: [
     {

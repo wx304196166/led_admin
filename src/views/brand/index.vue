@@ -107,7 +107,7 @@ export default {
   },
   created() {
     // 登录完成后改为从 store获取
-    this.reset.modificationUserId = 'b210cb8acccd4226b3321e9eb038c662'
+    this.reset.modification_user_id = 'b210cb8acccd4226b3321e9eb038c662'
 
     this.initPageData()
   },
