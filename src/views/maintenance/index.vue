@@ -94,10 +94,9 @@
   </div>
 
 </template>
-
 <script>
-import classificationApi from '@/api/classificationApi'
-import classficationEntity from '@/entity/classficationEntity'
+import maintenanceApi from '@/api/maintenanceApi'
+import maintenanceEntity from '@/entity/maintenanceEntity'
 export default {
   data() {
     return {
@@ -110,9 +109,9 @@ export default {
       editDialog: false,
       isEdit: false,
       tableData: [],
-      model: classficationEntity.model,
-      reset: Object.assign({}, classficationEntity.model),
-      column: classficationEntity.tableColumn,
+      model: maintenanceEntity.model,
+      reset: Object.assign({}, maintenanceEntity.model),
+      column: maintenanceEntity.tableColumn,
       page: {
         current: 1,
         map: { name: '' },
@@ -140,7 +139,7 @@ export default {
     },
     remove() {
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
-      classificationApi.batchDelete(ids).then(response => {
+      maintenanceApi.batchDelete(ids).then(response => {
         if (response.code === 0) {
           this.$message.success('删除成功')
           this.initPageData(this.page.current)
@@ -163,7 +162,7 @@ export default {
     },
     // 初始化列表数据
     initPageData() {
-      classificationApi.queryPageList(this.page).then(response => {
+      maintenanceApi.queryPageList(this.page).then(response => {
         this.tableData = []
         if (response.code === 0) {
           this.page.total = response.data.total
@@ -196,7 +195,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.isEdit) { // 编辑
-            classificationApi.update(this.model).then(response => {
+            maintenanceApi.update(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功')
                 this.initPageData(this.page.current)
@@ -208,7 +207,7 @@ export default {
               this.$message.error('修改失败.')
             })
           } else { // 新增
-            classificationApi.create(this.model).then(response => {
+            maintenanceApi.create(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('添加成功')
                 this.initPageData(this.page.current)
