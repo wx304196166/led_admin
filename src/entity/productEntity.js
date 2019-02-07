@@ -6,6 +6,8 @@ const userInfo = {
   model: {
     // UUID：自动生成
     id: '',
+    // 产品名称
+    name: '',
     // 所属分类
     classification_id: '',
     // 所属品牌
@@ -21,7 +23,7 @@ const userInfo = {
     // 缩略图
     thumbnail: '',
     // 关联产品列表
-    related_product_list:[],
+    related_product_list: [],
     // 修改用户id
     modification_user_id: '',
     // 修改用户类型
@@ -29,21 +31,25 @@ const userInfo = {
 
   },
   tableColumn: [{
-      label: '账号',
-      prop: 'username'
+      label: '产品名称',
+      prop: 'name'
     },
     {
-      label: '姓名',
-      prop: 'real_name'
+      label: '所属分类',
+      prop: 'classification_id'
     },
     {
-      label: '联系电话',
-      prop: 'phone'
+      label: '所属品牌',
+      prop: 'brand_id'
     },
     {
-      label: '邮箱',
-      prop: 'email'
-    }
+      label: '所属标签',
+      prop: 'label_id'
+    },
+    {
+      label: '规格',
+      prop: 'specifications'
+    }    
   ]
 }
 export default userInfo

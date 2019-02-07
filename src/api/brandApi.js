@@ -1,9 +1,6 @@
 import request from '@/utils/request'
 const index = 'brand'
-/**
- * Created by crit_space on 2018-12-28
- * 项目区间信息表前端api请求接口层.
- */
+
 const brandApi = {
   // 分页查询数据
   queryPageList(data) {

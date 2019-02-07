@@ -16,7 +16,12 @@
       <el-table ref="table" :data="tableData" :border="true" stripe style="width: 100%" @row-click="handleSelCurrentChange" @selection-change="selsChange">
         <el-table-column type="index" label="序号" width="50px" align="center" />
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true" />
+        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="item.hasMap">{{map[item.prop][scope.row[item.prop]]}}</span>
+            <span v-else>{{scope.row[item.prop]}}</span>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
@@ -85,8 +90,9 @@
 </template>
 
 <script>
-import classificationApi from '@/api/classificationApi'
-import classficationEntity from '@/entity/classficationEntity'
+import classificationApi from '@/api/classificationApi';
+import classficationEntity from '@/entity/classficationEntity';
+import { queryAll } from '@/api/getAllApi';
 export default {
   data() {
     return {
@@ -102,6 +108,11 @@ export default {
       model: classficationEntity.model,
       reset: Object.assign({}, classficationEntity.model),
       column: classficationEntity.tableColumn,
+      map: {
+        brand_id: {},
+        label_id: {}
+      },
+
       page: {
         current: 1,
         map: { name: '' },
@@ -113,72 +124,81 @@ export default {
       }
     }
   },
-  created() {
-    this.reset.modification_user_id = this.$store.getters.token
-    this.initPageData()
+  async created() {
+    this.reset.modification_user_id = this.$store.getters.token;
+    let res = await queryAll('brand');
+    if (res.code === 0) {
+      res.data.forEach(item => {
+        this.map.brand_id[item.id] = item.name;
+      })
+    } else {
+      this.$message.error(res.message);
+    }
+    this.initPageData();
+
   },
   methods: {
     search() {
-      this.page.current = 1
-      this.initPageData()
+      this.page.current = 1;
+      this.initPageData();
     },
     add() {
-      this.addDialog = true
-      this.dialogTitle = '添加'
-      this.resetForm('form')
+      this.addDialog = true;
+      this.dialogTitle = '添加';
+      this.resetForm('form');
     },
     remove() {
-      var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
+      var ids = this.sels.map(item => item.id);
       classificationApi.batchDelete(ids).then(response => {
         if (response.code === 0) {
-          this.$message.success('删除成功')
-          this.initPageData(this.page.current)
-          this.deleteDialog = false
+          this.$message.success('删除成功');
+          this.initPageData(this.page.current);
+          this.deleteDialog = false;
         } else {
-          this.$message.error('删除失败')
+          this.$message.error('删除失败');
         }
       }).catch(() => {
-        this.$message.error('删除失败.')
+        this.$message.error('删除失败.');
       })
     },
     // 关闭对话框清除文本框内容
     dialogClose() {
-      this.resetForm('form')
+      this.resetForm('form');
     },
     // 切换页码
     handleCurrentChange(val) {
-      this.page.current = val
-      this.initPageData()
+      this.page.current = val;
+      this.initPageData();
     },
     // 初始化列表数据
     initPageData() {
       classificationApi.queryPageList(this.page).then(response => {
-        this.tableData = []
+        this.tableData = [];
         if (response.code === 0) {
-          this.page.total = response.data.total
-          this.tableData = response.data.records
+          this.page.total = response.data.total;
+          this.tableData = response.data.records;
         } else {
-          this.tableData = []
-          this.page.total = 0
+          this.tableData = [];
+          this.page.total = 0;
         }
-        this.$refs.table.clearSelection()
+        this.$refs.table.clearSelection();
       })
     },
     showModel(guide, row) {
       if (guide === 'detail') {
-        this.isEdit = false
-        this.detailDialog = true
-        this.model = Object.assign({}, row)
+        this.isEdit = false;
+        this.detailDialog = true;
+        this.model = Object.assign({}, row);
       }
       if (guide === 'edit') {
-        this.dialogTitle = '修改'
-        this.isEdit = true
-        this.addDialog = true
-        this.model = Object.assign({}, row)
+        this.dialogTitle = '修改';
+        this.isEdit = true;
+        this.addDialog = true;
+        this.model = Object.assign({}, row);
       }
       if (guide === 'delete') {
-        this.isEdit = false
-        this.deleteDialog = true
+        this.isEdit = false;
+        this.deleteDialog = true;
       }
     },
     submitForm(formName) {
@@ -187,26 +207,26 @@ export default {
           if (this.isEdit) { // 编辑
             classificationApi.update(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('修改成功')
-                this.initPageData(this.page.current)
-                this.addDialog = false
+                this.$message.success('修改成功');
+                this.initPageData(this.page.current);
+                this.addDialog = false;
               } else {
                 this.$message.error(`修改失败：${response.msg}`)
               }
             }).catch(() => {
-              this.$message.error('修改失败.')
+              this.$message.error('修改失败.');
             })
           } else { // 新增
             classificationApi.create(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('添加成功')
-                this.initPageData(this.page.current)
-                this.addDialog = false
+                this.$message.success('添加成功');
+                this.initPageData(this.page.current);
+                this.addDialog = false;
               } else {
-                this.$message.error(`添加失败：${response.msg}`)
+                this.$message.error(`添加失败：${response.msg}`);
               }
             }).catch(() => {
-              this.$message.error('添加失败.')
+              this.$message.error('添加失败.');
             })
           }
         } else {
@@ -217,19 +237,19 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.$refs[formName].clearValidate()
-        this.model = Object.assign({}, this.reset)
+        this.$refs[formName].clearValidate();
+        this.model = Object.assign({}, this.reset);
       }
     },
     selsChange(sels) {
-      this.sels = sels
+      this.sels = sels;
     },
     delGroup() {
-      this.isEdit = false
-      this.deleteDialog = true
+      this.isEdit = false;
+      this.deleteDialog = true;
     },
     handleSelCurrentChange(row, event, column) {
-      this.$refs.table.toggleRowSelection(row)
+      this.$refs.table.toggleRowSelection(row);
     }
   }
 }

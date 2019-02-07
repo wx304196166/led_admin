@@ -26,11 +26,13 @@ const classficationInfo = {
     },
     {
       label: '关联品牌',
-      prop: 'brand_id'
+      prop: 'brand_id',
+      hasMap:true
     },
     {
       label: '关联标签',
-      prop: 'lable_id'
+      prop: 'lable_id',
+      hasMap:true
     },
     {
       label: '备注信息',
