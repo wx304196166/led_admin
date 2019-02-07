@@ -1,12 +1,12 @@
 import request from '@/utils/request'
-const index = 'adminUser'
+const index = 'customerUser'
 /**
  * Created by crit_space on 2018-12-28
  * 项目区间信息表前端api请求接口层.
  */
-const adminUserApi = {
+const customerUserApi = {
   // 分页查询数据
-  queryPageList: function (data) {
+  queryPageList(data) {
     return request({
       url: '/master/queryPageList/' + index,
       method: 'post',
@@ -14,7 +14,7 @@ const adminUserApi = {
     })
   },
   // 新增数据
-  create: function (data) {
+  create(data) {
     return request({
       url: '/master/create/' + index,
       method: 'post',
@@ -22,7 +22,7 @@ const adminUserApi = {
     })
   },
   // 更新数据
-  update: function (data) {
+  update(data) {
     return request({
       url: '/master/update/' + index,
       method: 'post',
@@ -31,7 +31,7 @@ const adminUserApi = {
   },
   
   // 批量删除
-  batchDelete: function (data) {
+  batchDelete(data) {
     return request({
       url: '/master/batchDelete/' + index,
       method: 'delete',
@@ -41,4 +41,4 @@ const adminUserApi = {
 
 }
 
-export default adminUserApi
+export default customerUserApi

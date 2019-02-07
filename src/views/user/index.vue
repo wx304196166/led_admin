@@ -2,13 +2,13 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      用户名:
-      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" />
+      用户账号:
+      <el-input v-model="page.map.username" placeholder="请输入搜索内容" @keypress.enter.native="search" />
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
         </el-button>
-        <el-button :disabled="this.sels.length === 0" type="danger" @click="delGroup">批量删除
+        <el-button :disabled="sels.length === 0" type="danger" @click="delGroup">批量删除
         </el-button>
       </div>
     </div>
@@ -33,8 +33,8 @@
     <el-dialog :title="dialogTitle" :visible.sync="addDialog" @close="dialogClose">
       <el-form ref="form" :model="model" :rules="rule" label-width="150px" style="width: 80%">
 
-        <el-form-item label="用户名:" prop="username">
-          <el-input v-model="model.name" placeholder="请输入用户名" />
+        <el-form-item label="账号:" prop="username">
+          <el-input v-model="model.username" placeholder="请输入用户名" />
         </el-form-item>
 
       </el-form>
@@ -50,10 +50,10 @@
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
 
         <el-form-item label="品牌名称:" prop="name">
-          <el-input readonly v-model="model.name" placeholder="请输入名称" />
+          <el-input v-model="model.name" readonly placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="备注信息:" prop="remark">
-          <el-input readonly type="textarea" v-model="model.remark" placeholder="请输入备注" />
+          <el-input v-model="model.remark" type="textarea" readonly placeholder="请输入备注" />
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -70,41 +70,37 @@
 </template>
 
 <script>
-import brandApi from '@/api/brandApi'
-import brandInfo from '@/entity/brandEntity'
-
+import userApi from '@/api/userApi'
+import userInfo from '@/entity/userEntity'
 
 export default {
   data() {
     return {
       dialogTitle: '添加',
       sels: [],
-      createUser: this.$store.getters.name,
-      importDialog: false,
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
       editDialog: false,
-      totalSize: 0,
       isEdit: false,
       tableData: [],
-      model: brandInfo.model,
-      reset: Object.assign({}, brandInfo.model),
-      column: brandInfo.tableColumn,
+      model: userInfo.model,
+      reset: Object.assign({}, userInfo.model),
+      column: userInfo.tableColumn,
       page: {
         current: 1,
-        map: { name: '' },
+        map: { username: '' },
         size: 10,
         total: 0
       },
       rule: {
-        //根据自己需要添加校验规则
+        // 根据自己需要添加校验规则
       }
     }
   },
   created() {
-    // 登录完成后改为从 store获取
-    this.reset.modification_user_id = 'b210cb8acccd4226b3321e9eb038c662'
+    // 获取当前用户信息
+    this.reset.modification_user_id = this.$store.getters.user.token
 
     this.initPageData()
   },
@@ -119,9 +115,8 @@ export default {
       this.resetForm('form')
     },
     remove() {
-
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
-      brandApi.batchDelete(ids).then(response => {
+      userApi.batchDelete(ids).then(response => {
         if (response.code === 0) {
           this.$message.success('删除成功')
           this.initPageData(this.page.current)
@@ -144,7 +139,7 @@ export default {
     },
     // 初始化列表数据
     initPageData() {
-      brandApi.queryPageList(this.page).then(response => {
+      userApi.queryPageList(this.page).then(response => {
         this.tableData = []
         if (response.code === 0) {
           this.page.total = response.data.total
@@ -177,7 +172,7 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           if (this.isEdit) { // 编辑
-            brandApi.update(this.model).then(response => {
+            userApi.update(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功')
                 this.initPageData(this.page.current)
@@ -189,7 +184,7 @@ export default {
               this.$message.error('修改失败.')
             })
           } else { // 新增
-            brandApi.create(this.model).then(response => {
+            userApi.create(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('添加成功')
                 this.initPageData(this.page.current)
@@ -209,6 +204,7 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
+        this.refs[formName].clearValidate()
         this.model = Object.assign({}, this.reset)
       }
     },
@@ -216,7 +212,6 @@ export default {
       this.sels = sels
     },
     delGroup() {
-      var ids = this.sels.map(item => item.id).join()// 获取所有选中行的id组成的字符串，以逗号分隔
       this.isEdit = false
       this.deleteDialog = true
     },

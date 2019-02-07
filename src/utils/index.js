@@ -1,7 +1,9 @@
 /**
  * Created by jiachenpan on 16/11/18.
  */
-
+import {
+  Message
+} from 'element-ui';
 export function parseTime(time, cFormat) {
   if (arguments.length === 0) {
     return null
@@ -71,4 +73,11 @@ export function formatTime(time, option) {
 
 export function isExternal(path) {
   return /^(https?:|mailto:|tel:)/.test(path)
+}
+export function err(message){
+  Message({
+    message,
+    type: 'error',
+    duration: 5 * 1000
+  });
 }

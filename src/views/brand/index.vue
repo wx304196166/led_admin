@@ -8,7 +8,7 @@
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
         </el-button>
-        <el-button :disabled="this.sels.length === 0" type="danger" @click="delGroup">批量删除
+        <el-button :disabled="sels.length === 0" type="danger" @click="delGroup">批量删除
         </el-button>
       </div>
     </div>
@@ -37,7 +37,7 @@
           <el-input v-model="model.name" placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="备注信息:" prop="remark">
-          <el-input type="textarea" v-model="model.remark" placeholder="请输入备注" />
+          <el-input v-model="model.remark" type="textarea" placeholder="请输入备注" />
         </el-form-item>
 
       </el-form>
@@ -53,10 +53,10 @@
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
 
         <el-form-item label="品牌名称:" prop="name">
-          <el-input readonly v-model="model.name" placeholder="请输入名称" />
+          <el-input v-model="model.name" readonly placeholder="请输入名称" />
         </el-form-item>
         <el-form-item label="备注信息:" prop="remark">
-          <el-input readonly type="textarea" v-model="model.remark" placeholder="请输入备注" />
+          <el-input v-model="model.remark" type="textarea" readonly placeholder="请输入备注" />
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -75,20 +75,16 @@
 <script>
 import brandApi from '@/api/brandApi'
 import brandInfo from '@/entity/brandEntity'
-
-
 export default {
   data() {
     return {
       dialogTitle: '添加',
       sels: [],
-      createUser: this.$store.getters.name,
       importDialog: false,
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
       editDialog: false,
-      totalSize: 0,
       isEdit: false,
       tableData: [],
       model: brandInfo.model,
@@ -101,14 +97,12 @@ export default {
         total: 0
       },
       rule: {
-        //根据自己需要添加校验规则
+        // 根据自己需要添加校验规则
       }
     }
   },
   created() {
-    // 登录完成后改为从 store获取
-    this.reset.modification_user_id = 'b210cb8acccd4226b3321e9eb038c662'
-
+    this.reset.modification_user_id = this.$store.getters.user.token
     this.initPageData()
   },
   methods: {
@@ -122,7 +116,6 @@ export default {
       this.resetForm('form')
     },
     remove() {
-
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
       brandApi.batchDelete(ids).then(response => {
         if (response.code === 0) {
@@ -212,6 +205,7 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
+        this.refs[formName].clearValidate()
         this.model = Object.assign({}, this.reset)
       }
     },
@@ -219,7 +213,6 @@ export default {
       this.sels = sels
     },
     delGroup() {
-      var ids = this.sels.map(item => item.id).join()// 获取所有选中行的id组成的字符串，以逗号分隔
       this.isEdit = false
       this.deleteDialog = true
     },

@@ -6,7 +6,7 @@ const index = 'brand'
  */
 const brandApi = {
   // 分页查询数据
-  queryPageList: function (data) {
+  queryPageList(data) {
     return request({
       url: '/master/queryPageList/' + index,
       method: 'post',
@@ -14,7 +14,7 @@ const brandApi = {
     })
   },
   // 新增数据
-  create: function (data) {
+  create(data) {
     return request({
       url: '/master/create/' + index,
       method: 'post',
@@ -22,7 +22,7 @@ const brandApi = {
     })
   },
   // 更新数据
-  update: function (data) {
+  update(data) {
     return request({
       url: '/master/update/' + index,
       method: 'post',
@@ -31,7 +31,7 @@ const brandApi = {
   },
   
   // 批量删除
-  batchDelete: function (data) {
+  batchDelete(data) {
     return request({
       url: '/master/batchDelete/' + index,
       method: 'delete',
