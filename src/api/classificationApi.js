@@ -41,4 +41,4 @@ const classificationApi = {
 
 }
 
-export default classification
+export default classificationApi
