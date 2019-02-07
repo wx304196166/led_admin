@@ -8,9 +8,11 @@ const classficationInfo = {
     id: '',
     // 名称
     name: '',
-    // 备注
+    // 品牌
     brand_id: '',
+    // 标签
     lable_id:'',
+    // 备注
     remark:'',
     // 修改用户id
     modification_user_id: '',
@@ -23,11 +25,11 @@ const classficationInfo = {
       prop: 'name'
     },
     {
-      label: '关联品牌ID',
+      label: '关联品牌',
       prop: 'brand_id'
     },
     {
-      label: '关联标签ID',
+      label: '关联标签',
       prop: 'lable_id'
     },
     {
