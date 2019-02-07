@@ -102,7 +102,7 @@ export default {
     }
   },
   created() {
-    this.reset.modification_user_id = this.$store.getters.user.token
+    this.reset.modification_user_id = this.$store.getters.token
     this.initPageData()
   },
   methods: {
@@ -205,7 +205,7 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.refs[formName].clearValidate()
+        this.$refs[formName].clearValidate()
         this.model = Object.assign({}, this.reset)
       }
     },

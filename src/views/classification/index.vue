@@ -2,7 +2,7 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      品牌名称
+      分类名称
       <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
@@ -36,11 +36,11 @@
         <el-form-item label="分类名称" prop="name">
           <el-input v-model="model.name" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="关联品牌ID" prop="brand_id">
-          <el-input v-model="model.remark" type="textarea" placeholder="请输入" />
+        <el-form-item label="关联品牌" prop="brand_id">
+          <el-input v-model="model.brand_id" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="关联标签ID" prop="lable_id">
-          <el-input v-model="model.name" placeholder="请输入" />
+        <el-form-item label="关联标签" prop="lable_id">
+          <el-input v-model="model.lable_id" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="备注信息" prop="remark">
           <el-input v-model="model.remark" type="textarea" placeholder="请输入" />
@@ -59,16 +59,16 @@
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
 
         <el-form-item label="分类名称" prop="name">
-          <el-input v-model="model.name" placeholder="请输入" />
+          <el-input v-model="model.name" readonly />
         </el-form-item>
-        <el-form-item label="关联品牌ID" prop="brand_id">
-          <el-input v-model="model.remark" type="textarea" placeholder="请输入" />
+        <el-form-item label="关联品牌" prop="brand_id">
+          <el-input v-model="model.brand_id" readonly />
         </el-form-item>
-        <el-form-item label="关联标签ID" prop="lable_id">
-          <el-input v-model="model.name" placeholder="请输入" />
+        <el-form-item label="关联标签" prop="lable_id">
+          <el-input v-model="model.lable_id" readonly />
         </el-form-item>
         <el-form-item label="备注信息" prop="remark">
-          <el-input v-model="model.remark" type="textarea" placeholder="请输入" />
+          <el-input v-model="model.remark" type="textarea" readonly />
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -114,7 +114,7 @@ export default {
     }
   },
   created() {
-    this.reset.modification_user_id = this.$store.getters.user.token
+    this.reset.modification_user_id = this.$store.getters.token
     this.initPageData()
   },
   methods: {
@@ -217,7 +217,7 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.refs[formName].clearValidate()
+        this.$refs[formName].clearValidate()
         this.model = Object.assign({}, this.reset)
       }
     },

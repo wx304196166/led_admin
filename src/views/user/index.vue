@@ -2,8 +2,8 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      用户账号：
-      <el-input v-model="page.map.username" placeholder="请输入搜索内容" @keypress.enter.native="search" />
+      用户账号
+      <el-input v-model="page.map.username" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px"/>
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
@@ -37,13 +37,13 @@
           <el-input v-model="model.username" placeholder="请输入账号" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="model.password" placeholder="请输入密码" />
+          <el-input v-model="model.password" type="password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item label="姓名" prop="real_name">
           <el-input v-model="model.real_name" placeholder="请输入姓名" />
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="model.password" placeholder="请输入联系电话" />
+          <el-input v-model="model.phone" placeholder="请输入联系电话" />
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
           <el-input v-model="model.email" placeholder="请输入邮箱" />
@@ -61,11 +61,17 @@
     <el-dialog :visible.sync="detailDialog" title="查看详细信息" @close="dialogClose">
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
 
-        <el-form-item label="品牌名称:" prop="name">
-          <el-input v-model="model.name" readonly placeholder="请输入名称" />
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="model.username" readonly/>
+        </el-form-item>        
+        <el-form-item label="姓名" prop="real_name">
+          <el-input v-model="model.real_name" readonly />
         </el-form-item>
-        <el-form-item label="备注信息:" prop="remark">
-          <el-input v-model="model.remark" type="textarea" readonly placeholder="请输入备注" />
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="model.phone" readonly />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="model.email" readonly />
         </el-form-item>
       </el-form>
     </el-dialog>
@@ -82,9 +88,8 @@
 </template>
 
 <script>
-import userApi from '@/api/userApi'
-import userInfo from '@/entity/userEntity'
-
+import userApi from '@/api/userApi';
+import userInfo from '@/entity/userEntity';
 export default {
   data() {
     return {
@@ -112,7 +117,7 @@ export default {
   },
   created() {
     // 获取当前用户信息
-    this.reset.modification_user_id = this.$store.getters.user.token
+    this.reset.modification_user_id = this.$store.getters.token
 
     this.initPageData()
   },
@@ -216,7 +221,7 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.refs[formName].clearValidate()
+        this.$refs[formName].clearValidate()
         this.model = Object.assign({}, this.reset)
       }
     },
