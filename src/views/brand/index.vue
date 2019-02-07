@@ -2,8 +2,8 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      品牌名称：
-      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" />
+      品牌名称
+      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px"/>
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
@@ -33,10 +33,10 @@
     <el-dialog :title="dialogTitle" :visible.sync="addDialog" @close="dialogClose">
       <el-form ref="form" :model="model" :rules="rule" label-width="150px" style="width: 80%">
 
-        <el-form-item label="品牌名称:" prop="name">
+        <el-form-item label="品牌名称" prop="name">
           <el-input v-model="model.name" placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="备注信息:" prop="remark">
+        <el-form-item label="备注信息" prop="remark">
           <el-input v-model="model.remark" type="textarea" placeholder="请输入备注" />
         </el-form-item>
 
@@ -52,10 +52,10 @@
     <el-dialog :visible.sync="detailDialog" title="查看详细信息" @close="dialogClose">
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
 
-        <el-form-item label="品牌名称:" prop="name">
+        <el-form-item label="品牌名称" prop="name">
           <el-input v-model="model.name" readonly placeholder="请输入名称" />
         </el-form-item>
-        <el-form-item label="备注信息:" prop="remark">
+        <el-form-item label="备注信息" prop="remark">
           <el-input v-model="model.remark" type="textarea" readonly placeholder="请输入备注" />
         </el-form-item>
       </el-form>

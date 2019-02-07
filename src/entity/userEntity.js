@@ -8,7 +8,7 @@ const userInfo = {
     id: '',
     // 名称
     username: '',
-    // 备注
+    // 密码
     password: '',
     // 修改用户id
     modification_user_id: '',

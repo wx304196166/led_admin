@@ -2,7 +2,7 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      用户账号:
+      用户账号：
       <el-input v-model="page.map.username" placeholder="请输入搜索内容" @keypress.enter.native="search" />
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
@@ -33,8 +33,20 @@
     <el-dialog :title="dialogTitle" :visible.sync="addDialog" @close="dialogClose">
       <el-form ref="form" :model="model" :rules="rule" label-width="150px" style="width: 80%">
 
-        <el-form-item label="账号:" prop="username">
-          <el-input v-model="model.username" placeholder="请输入用户名" />
+        <el-form-item label="账号" prop="username">
+          <el-input v-model="model.username" placeholder="请输入账号" />
+        </el-form-item>
+        <el-form-item label="密码" prop="password">
+          <el-input v-model="model.password" placeholder="请输入密码" />
+        </el-form-item>
+        <el-form-item label="姓名" prop="real_name">
+          <el-input v-model="model.real_name" placeholder="请输入姓名" />
+        </el-form-item>
+        <el-form-item label="联系电话" prop="phone">
+          <el-input v-model="model.password" placeholder="请输入联系电话" />
+        </el-form-item>
+        <el-form-item label="邮箱" prop="email">
+          <el-input v-model="model.email" placeholder="请输入邮箱" />
         </el-form-item>
 
       </el-form>
