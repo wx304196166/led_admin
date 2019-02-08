@@ -18,7 +18,7 @@
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true">
           <template slot-scope="scope">
-            <span v-if="item.hasMap">{{map[item.prop][scope.row[item.prop]]}}</span>
+            <span v-if="item.hasMap">{{getName(scope.row[item.prop],item.prop)}}</span>
             <span v-else>{{scope.row[item.prop]}}</span>
           </template>
         </el-table-column>
@@ -42,12 +42,12 @@
           <el-input v-model="model.name" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="关联品牌" prop="brand_id">
-          <el-select v-model="model.brand_id" placeholder="请选择" style="width:100%">
+          <el-select v-model="model.brand_id" multiple placeholder="请选择" style="width:100%">
             <el-option v-for="(val,key) in map.brand_id" :key="key" :value="key" :label="val"></el-option>
           </el-select>
         </el-form-item>
         <el-form-item label="关联标签" prop="label_id">
-          <el-select v-model="model.label_id" placeholder="请选择" style="width:100%">
+          <el-select v-model="model.label_id" multiple placeholder="请选择" style="width:100%">
             <el-option v-for="(val,key) in map.label_id" :key="key" :value="key" :label="val"></el-option>
           </el-select>
         </el-form-item>
@@ -147,11 +147,17 @@ export default {
     } else {
       this.$message.error(res.message);
     }
-    console.log(this.map);
     this.initPageData();
 
   },
   methods: {
+    getName(ids, prop) {
+      const arr = [];
+      for (let item of ids) {
+        arr.push(this.map[prop][item]);
+      }
+      return arr.join(',');
+    },
     search() {
       this.page.current = 1;
       this.initPageData();
@@ -190,6 +196,13 @@ export default {
         this.tableData = [];
         if (response.code === 0) {
           this.page.total = response.data.total;
+          response.data.records.forEach(item => {
+            for (const key in item) {
+              if (this.map[key]) {
+                item[key] = item[key].split(',');
+              }
+            }
+          })
           this.tableData = response.data.records;
         } else {
           this.tableData = [];
@@ -231,6 +244,12 @@ export default {
               this.$message.error('修改失败.');
             })
           } else { // 新增
+            const sendData = Object.assign({}, this.model);
+            for (const key in sendData) {
+              if (this.map[key]) {
+                sendData[key] = sendData[key].join(',');
+              }
+            }
             classificationApi.create(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('添加成功');

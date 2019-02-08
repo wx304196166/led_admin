@@ -9,30 +9,29 @@ const classficationInfo = {
     // 名称
     name: '',
     // 品牌
-    brand_id: '',
+    brand_id: [],
     // 标签
-    label_id:'',
+    label_id: [],
     // 备注
-    remark:'',
+    remark: '',
     // 修改用户id
     modification_user_id: '',
     // 修改用户类型
     modification_user_type: 0
   },
-  tableColumn: [
-    {
+  tableColumn: [{
       label: '分类名称',
       prop: 'name'
     },
     {
       label: '关联品牌',
       prop: 'brand_id',
-      hasMap:true
+      hasMap: true
     },
     {
       label: '关联标签',
       prop: 'label_id',
-      hasMap:true
+      hasMap: true
     },
     {
       label: '备注信息',
