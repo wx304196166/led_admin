@@ -11,7 +11,7 @@ const classficationInfo = {
     // 品牌
     brand_id: '',
     // 标签
-    lable_id:'',
+    label_id:'',
     // 备注
     remark:'',
     // 修改用户id
@@ -31,7 +31,7 @@ const classficationInfo = {
     },
     {
       label: '关联标签',
-      prop: 'lable_id',
+      prop: 'label_id',
       hasMap:true
     },
     {

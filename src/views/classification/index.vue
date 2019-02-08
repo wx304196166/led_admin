@@ -42,10 +42,14 @@
           <el-input v-model="model.name" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="关联品牌" prop="brand_id">
-          <el-input v-model="model.brand_id" placeholder="请输入" />
+          <el-select v-model="model.brand_id" placeholder="请选择" style="width:100%">
+            <el-option v-for="(val,key) in map.brand_id" :key="key" :value="key" :label="val"></el-option>
+          </el-select>
         </el-form-item>
-        <el-form-item label="关联标签" prop="lable_id">
-          <el-input v-model="model.lable_id" placeholder="请输入" />
+        <el-form-item label="关联标签" prop="label_id">
+          <el-select v-model="model.label_id" placeholder="请选择" style="width:100%">
+            <el-option v-for="(val,key) in map.label_id" :key="key" :value="key" :label="val"></el-option>
+          </el-select>
         </el-form-item>
         <el-form-item label="备注信息" prop="remark">
           <el-input v-model="model.remark" type="textarea" placeholder="请输入" />
@@ -69,8 +73,8 @@
         <el-form-item label="关联品牌" prop="brand_id">
           <el-input v-model="model.brand_id" readonly />
         </el-form-item>
-        <el-form-item label="关联标签" prop="lable_id">
-          <el-input v-model="model.lable_id" readonly />
+        <el-form-item label="关联标签" prop="label_id">
+          <el-input v-model="model.label_id" readonly />
         </el-form-item>
         <el-form-item label="备注信息" prop="remark">
           <el-input v-model="model.remark" type="textarea" readonly />
@@ -134,6 +138,16 @@ export default {
     } else {
       this.$message.error(res.message);
     }
+
+    res = await queryAll('label');
+    if (res.code === 0) {
+      res.data.forEach(item => {
+        this.map.label_id[item.id] = item.name;
+      })
+    } else {
+      this.$message.error(res.message);
+    }
+    console.log(this.map);
     this.initPageData();
 
   },
