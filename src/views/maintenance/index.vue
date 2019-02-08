@@ -197,14 +197,14 @@ export default {
           if (this.isEdit) { // 编辑
             maintenanceApi.update(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('修改成功')
-                this.initPageData(this.page.current)
+                this.$message.success('修改成功');
+                this.initPageData(this.page.current);
                 this.addDialog = false
               } else {
-                this.$message.error(`修改失败：${response.msg}`)
+                this.$message.error(`修改失败：${response.msg}`);
               }
             }).catch(() => {
-              this.$message.error('修改失败.')
+              this.$message.error('修改失败.');
             })
           } else { // 新增
             maintenanceApi.create(this.model).then(response => {
@@ -217,12 +217,12 @@ export default {
               }
             }).catch(() => {
               this.$message.error('添加失败.');
-            })
+            });
           }
         } else {
-          this.$message.error('请检查填写数据.')
+          this.$message.error('请检查填写数据.');
         }
-      })
+      });
     },
     // 重置
     resetForm(formName) {

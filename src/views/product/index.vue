@@ -59,7 +59,7 @@ export default {
         children: 'children',
         label: 'label'
       }
-    }
+    };
   },
   watch: {
     filterText(val) {
@@ -69,10 +69,10 @@ export default {
 
   methods: {
     filterNode(value, data) {
-      if (!value) return true
+      if (!value) return true;
       return data.label.indexOf(value) !== -1;
     }
   }
-}
+};
 </script>
 

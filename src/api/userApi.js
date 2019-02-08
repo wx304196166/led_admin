@@ -19,7 +19,7 @@ const customerUserApi = {
       url: '/master/create/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 更新数据
   update(data) {
@@ -27,7 +27,7 @@ const customerUserApi = {
       url: '/master/update/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 批量删除
   batchDelete(data) {

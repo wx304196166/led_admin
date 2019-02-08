@@ -11,7 +11,7 @@ const labelApi = {
       url: '/master/queryPageList/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 新增数据
   create(data) {
@@ -19,7 +19,7 @@ const labelApi = {
       url: '/master/create/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 更新数据
   update(data) {
@@ -27,7 +27,7 @@ const labelApi = {
       url: '/master/update/' + index,
       method: 'post',
       data
-    })
+    });
   },
   
   // 批量删除
@@ -36,9 +36,9 @@ const labelApi = {
       url: '/master/batchDelete/' + index,
       method: 'delete',
       data
-    })
+    });
   }
 
-}
+};
 
 export default labelApi;

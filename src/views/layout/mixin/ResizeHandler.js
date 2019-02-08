@@ -33,9 +33,9 @@ export default {
         store.dispatch('ToggleDevice', isMobile ? 'mobile' : 'desktop');
 
         if (isMobile) {
-          store.dispatch('CloseSideBar', { withoutAnimation: true })
+          store.dispatch('CloseSideBar', { withoutAnimation: true });
         }
       }
     }
   }
-}
+};

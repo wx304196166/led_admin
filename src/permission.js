@@ -26,7 +26,7 @@ router.beforeEach((to, from, next) => {
               path: '/'
             });
           });
-        })
+        });
       } else {
         next();
       }
@@ -38,7 +38,7 @@ router.beforeEach((to, from, next) => {
       next(`/login?redirect=${to.path}`);
       NProgress.done();
     }
-  }  
+  };
 });
 
 router.afterEach(() => {

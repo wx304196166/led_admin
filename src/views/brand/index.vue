@@ -205,19 +205,19 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.$refs[formName].clearValidate()
-        this.model = Object.assign({}, this.reset)
+        this.$refs[formName].clearValidate();
+        this.model = Object.assign({}, this.reset);
       }
     },
     selsChange(sels) {
-      this.sels = sels
+      this.sels = sels;
     },
     delGroup() {
-      this.isEdit = false
-      this.deleteDialog = true
+      this.isEdit = false;
+      this.deleteDialog = true;
     },
     handleSelCurrentChange(row, event, column) {
-      this.$refs.table.toggleRowSelection(row)
+      this.$refs.table.toggleRowSelection(row);
     }
   }
 }

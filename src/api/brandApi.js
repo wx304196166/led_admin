@@ -8,7 +8,7 @@ const brandApi = {
       url: '/master/queryPageList/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 新增数据
   create(data) {
@@ -16,7 +16,7 @@ const brandApi = {
       url: '/master/create/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 更新数据
   update(data) {
@@ -24,7 +24,7 @@ const brandApi = {
       url: '/master/update/' + index,
       method: 'post',
       data
-    })
+    });
   },
   
   // 批量删除
@@ -33,9 +33,9 @@ const brandApi = {
       url: '/master/batchDelete/' + index,
       method: 'delete',
       data
-    })
+    });
   }
 
-}
+};
 
 export default brandApi;
