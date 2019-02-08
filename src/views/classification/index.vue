@@ -71,10 +71,10 @@
           <el-input v-model="model.name" readonly />
         </el-form-item>
         <el-form-item label="关联品牌" prop="brand_id">
-          <el-input v-model="model.brand_id" readonly />
+          <el-input :value="getName(model.brand_id,'brand_id')" readonly />
         </el-form-item>
         <el-form-item label="关联标签" prop="label_id">
-          <el-input v-model="model.label_id" readonly />
+          <el-input :value="getName(model.label_id,'label_id')" readonly />
         </el-form-item>
         <el-form-item label="备注信息" prop="remark">
           <el-input v-model="model.remark" type="textarea" readonly />

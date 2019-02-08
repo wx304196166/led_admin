@@ -1,7 +1,3 @@
-/**
- * Created by crit_space on 2018-12-28
- * 项目区间信息表 实体.
- */
 const maintenanceInfo = {
   model: {
     // UUID：自动生成
