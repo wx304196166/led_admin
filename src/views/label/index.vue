@@ -159,9 +159,9 @@ export default {
         this.model = Object.assign({}, row)
       }
       if (guide === 'edit') {
-        this.dialogTitle = '修改'
-        this.isEdit = true
-        this.addDialog = true
+        this.dialogTitle = '修改';
+        this.isEdit = true;
+        this.addDialog = true;
         this.model = Object.assign({}, row)
       }
       if (guide === 'delete') {

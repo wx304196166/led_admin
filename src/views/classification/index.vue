@@ -126,7 +126,7 @@ export default {
       rule: {
         // 根据自己需要添加校验规则
       }
-    }
+    };
   },
   async created() {
     this.reset.modification_user_id = this.$store.getters.token;
@@ -134,7 +134,7 @@ export default {
     if (res.code === 0) {
       res.data.forEach(item => {
         this.map.brand_id[item.id] = item.name;
-      })
+      });
     } else {
       this.$message.error(res.message);
     }
@@ -143,7 +143,7 @@ export default {
     if (res.code === 0) {
       res.data.forEach(item => {
         this.map.label_id[item.id] = item.name;
-      })
+      });
     } else {
       this.$message.error(res.message);
     }
@@ -179,7 +179,7 @@ export default {
         }
       }).catch(() => {
         this.$message.error('删除失败.');
-      })
+      });
     },
     // 关闭对话框清除文本框内容
     dialogClose() {
@@ -209,7 +209,7 @@ export default {
           this.page.total = 0;
         }
         this.$refs.table.clearSelection();
-      })
+      });
     },
     showModel(guide, row) {
       if (guide === 'detail') {
@@ -260,10 +260,10 @@ export default {
               }
             }).catch(() => {
               this.$message.error('添加失败.');
-            })
+            });
           }
         } else {
-          this.$message.error('请检查填写数据.')
+          this.$message.error('请检查填写数据.');
         }
       })
     },
@@ -285,7 +285,7 @@ export default {
       this.$refs.table.toggleRowSelection(row);
     }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

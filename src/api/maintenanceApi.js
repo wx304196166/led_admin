@@ -41,4 +41,4 @@ const maintenanceApi = {
 
 }
 
-export default maintenanceApi
+export default maintenanceApi;

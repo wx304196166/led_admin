@@ -113,76 +113,76 @@ export default {
       rule: {
         // 根据自己需要添加校验规则
       }
-    }
+    };
   },
   created() {
     // 获取当前用户信息
-    this.reset.modification_user_id = this.$store.getters.token
+    this.reset.modification_user_id = this.$store.getters.token;
 
-    this.initPageData()
+    this.initPageData();
   },
   methods: {
     search() {
-      this.page.current = 1
-      this.initPageData()
+      this.page.current = 1;
+      this.initPageData();
     },
     add() {
-      this.addDialog = true
-      this.dialogTitle = '添加'
-      this.resetForm('form')
+      this.addDialog = true;
+      this.dialogTitle = '添加';
+      this.resetForm('form');
     },
     remove() {
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
       userApi.batchDelete(ids).then(response => {
         if (response.code === 0) {
-          this.$message.success('删除成功')
-          this.initPageData(this.page.current)
-          this.deleteDialog = false
+          this.$message.success('删除成功');
+          this.initPageData(this.page.current);
+          this.deleteDialog = false;
         } else {
-          this.$message.error('删除失败')
+          this.$message.error('删除失败');
         }
       }).catch(() => {
-        this.$message.error('删除失败.')
+        this.$message.error('删除失败.');
       })
     },
     // 关闭对话框清除文本框内容
     dialogClose() {
-      this.resetForm('form')
+      this.resetForm('form');
     },
     // 切换页码
     handleCurrentChange(val) {
-      this.page.current = val
-      this.initPageData()
+      this.page.current = val;
+      this.initPageData();
     },
     // 初始化列表数据
     initPageData() {
       userApi.queryPageList(this.page).then(response => {
-        this.tableData = []
+        this.tableData = [];
         if (response.code === 0) {
-          this.page.total = response.data.total
-          this.tableData = response.data.records
+          this.page.total = response.data.total;
+          this.tableData = response.data.records;
         } else {
-          this.tableData = []
-          this.page.total = 0
+          this.tableData = [];
+          this.page.total = 0;
         }
-        this.$refs.table.clearSelection()
-      })
+        this.$refs.table.clearSelection();
+      });
     },
     showModel(guide, row) {
       if (guide === 'detail') {
-        this.isEdit = false
-        this.detailDialog = true
-        this.model = Object.assign({}, row)
+        this.isEdit = false;
+        this.detailDialog = true;
+        this.model = Object.assign({}, row);
       }
       if (guide === 'edit') {
-        this.dialogTitle = '修改'
-        this.isEdit = true
-        this.addDialog = true
-        this.model = Object.assign({}, row)
+        this.dialogTitle = '修改';
+        this.isEdit = true;
+        this.addDialog = true;
+        this.model = Object.assign({}, row);
       }
       if (guide === 'delete') {
-        this.isEdit = false
-        this.deleteDialog = true
+        this.isEdit = false;
+        this.deleteDialog = true;
       }
     },
     submitForm(formName) {
@@ -191,49 +191,49 @@ export default {
           if (this.isEdit) { // 编辑
             userApi.update(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('修改成功')
-                this.initPageData(this.page.current)
-                this.addDialog = false
+                this.$message.success('修改成功');
+                this.initPageData(this.page.current);
+                this.addDialog = false;
               } else {
-                this.$message.error(`修改失败：${response.msg}`)
+                this.$message.error(`修改失败：${response.msg}`);
               }
             }).catch(() => {
-              this.$message.error('修改失败.')
-            })
+              this.$message.error('修改失败.');
+            });
           } else { // 新增
             userApi.create(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('添加成功')
-                this.initPageData(this.page.current)
-                this.addDialog = false
+                this.$message.success('添加成功');
+                this.initPageData(this.page.current);
+                this.addDialog = false;
               } else {
-                this.$message.error(`添加失败：${response.msg}`)
+                this.$message.error(`添加失败：${response.msg}`);
               }
             }).catch(() => {
-              this.$message.error('添加失败.')
+              this.$message.error('添加失败.');
             })
           }
         } else {
-          this.$message.error('请检查填写数据.')
+          this.$message.error('请检查填写数据.');
         }
       })
     },
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.$refs[formName].clearValidate()
-        this.model = Object.assign({}, this.reset)
+        this.$refs[formName].clearValidate();
+        this.model = Object.assign({}, this.reset);
       }
     },
     selsChange(sels) {
-      this.sels = sels
+      this.sels = sels;
     },
     delGroup() {
-      this.isEdit = false
-      this.deleteDialog = true
+      this.isEdit = false;
+      this.deleteDialog = true;
     },
     handleSelCurrentChange(row, event, column) {
-      this.$refs.table.toggleRowSelection(row)
+      this.$refs.table.toggleRowSelection(row);
     }
   }
 }

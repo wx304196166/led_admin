@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-const index = 'customer_user'
+import request from '@/utils/request';
+const index = 'customer_user';
 /**
  * Created by crit_space on 2018-12-28
  * 项目区间信息表前端api请求接口层.
@@ -11,7 +11,7 @@ const customerUserApi = {
       url: '/master/queryPageList/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 新增数据
   create(data) {
@@ -29,16 +29,15 @@ const customerUserApi = {
       data
     })
   },
-  
   // 批量删除
   batchDelete(data) {
     return request({
       url: '/master/batchDelete/' + index,
       method: 'delete',
       data
-    })
+    });
   }
 
-}
+};
 
-export default customerUserApi
+export default customerUserApi;

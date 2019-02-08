@@ -1,5 +1,5 @@
-import request from '@/utils/request'
-const index = 'brand'
+import request from '@/utils/request';
+const index = 'brand';
 
 const brandApi = {
   // 分页查询数据
@@ -38,4 +38,4 @@ const brandApi = {
 
 }
 
-export default brandApi
+export default brandApi;

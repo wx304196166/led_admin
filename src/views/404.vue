@@ -29,7 +29,7 @@ export default {
       return '网管说这个页面你不能进......'
     }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
