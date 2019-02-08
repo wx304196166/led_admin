@@ -209,14 +209,14 @@ export default {
           } else { // 新增
             maintenanceApi.create(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('添加成功')
-                this.initPageData(this.page.current)
-                this.addDialog = false
+                this.$message.success('添加成功');
+                this.initPageData(this.page.current);
+                this.addDialog = false;
               } else {
-                this.$message.error(`添加失败：${response.msg}`)
+                this.$message.error(`添加失败：${response.msg}`);
               }
             }).catch(() => {
-              this.$message.error('添加失败.')
+              this.$message.error('添加失败.');
             })
           }
         } else {
@@ -227,22 +227,22 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.$refs[formName].clearValidate()
-        this.model = Object.assign({}, this.reset)
+        this.$refs[formName].clearValidate();
+        this.model = Object.assign({}, this.reset);
       }
     },
     selsChange(sels) {
-      this.sels = sels
+      this.sels = sels;
     },
     delGroup() {
-      this.isEdit = false
-      this.deleteDialog = true
+      this.isEdit = false;
+      this.deleteDialog = true;
     },
     handleSelCurrentChange(row, event, column) {
-      this.$refs.table.toggleRowSelection(row)
+      this.$refs.table.toggleRowSelection(row);
     }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>

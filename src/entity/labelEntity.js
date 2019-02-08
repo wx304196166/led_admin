@@ -25,5 +25,5 @@ const labelInfo = {
       prop: 'remark'
     }
   ]
-}
-export default labelInfo
+};
+export default labelInfo;

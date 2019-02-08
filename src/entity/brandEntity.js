@@ -25,5 +25,5 @@ const brandInfo = {
       prop: 'remark'
     }
   ]
-}
-export default brandInfo
+};
+export default brandInfo;

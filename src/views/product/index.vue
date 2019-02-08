@@ -63,14 +63,14 @@ export default {
   },
   watch: {
     filterText(val) {
-      this.$refs.tree2.filter(val)
+      this.$refs.tree2.filter(val);
     }
   },
 
   methods: {
     filterNode(value, data) {
       if (!value) return true
-      return data.label.indexOf(value) !== -1
+      return data.label.indexOf(value) !== -1;
     }
   }
 }
