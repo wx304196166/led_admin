@@ -11,7 +11,7 @@ const maintenanceApi = {
       url: '/master/queryPageList/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 新增数据
   create(data) {
@@ -19,7 +19,7 @@ const maintenanceApi = {
       url: '/master/create/' + index,
       method: 'post',
       data
-    })
+    });
   },
   // 更新数据
   update(data) {
@@ -27,7 +27,7 @@ const maintenanceApi = {
       url: '/master/update/' + index,
       method: 'post',
       data
-    })
+    });
   },
   
   // 批量删除
@@ -36,9 +36,9 @@ const maintenanceApi = {
       url: '/master/batchDelete/' + index,
       method: 'delete',
       data
-    })
+    });
   }
 
-}
+};
 
 export default maintenanceApi;

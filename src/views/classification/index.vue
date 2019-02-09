@@ -204,7 +204,7 @@ export default {
                 item[key] = item[key].split(',');
               }
             }
-          })
+          });
           this.tableData = response.data.records;
         } else {
           this.tableData = [];
@@ -241,7 +241,7 @@ export default {
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {
-                this.$message.error(`修改失败：${response.msg}`)
+                this.$message.error(`修改失败：${response.msg}`);
               }
             }).catch(() => {
               this.$message.error('修改失败.');

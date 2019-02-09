@@ -207,12 +207,12 @@ export default {
               }
             }).catch(() => {
               this.$message.error('添加失败.');
-            })
+            });
           }
         } else {
           this.$message.error('请检查填写数据.');
         }
-      })
+      });
     },
     // 重置
     resetForm(formName) {
@@ -232,7 +232,7 @@ export default {
       this.$refs.table.toggleRowSelection(row);
     }
   }
-}
+};
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
