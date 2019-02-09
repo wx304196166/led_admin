@@ -1,78 +1,190 @@
 <template>
-  <div class="app-container">
-    <el-input v-model="filterText" placeholder="Filter keyword" style="margin-bottom:30px;" />
+  <div>
+    <!---查询区域-->
+    <div class="search-box">
+      产品名称
+      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
+      <el-button type="primary" @click="search">查询</el-button>
+      <div style="marginTop: 20px">
+        <el-button type="primary" @click="add()">添加
+        </el-button>
+        <el-button :disabled="sels.length === 0" type="danger" @click="delGroup">批量删除
+        </el-button>
+      </div>
+    </div>
+    <div class="table-box">
+      <el-table ref="table" :data="tableData" :border="true" stripe style="width: 100%" @row-click="handleSelCurrentChange" @selection-change="selsChange">
+        <el-table-column type="index" label="序号" width="50px" align="center" />
+        <el-table-column type="selection" width="55" align="center" />
+        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true" />
+         
+        <el-table-column fixed="right" align="center" label="操作" width="140">
+          <template slot-scope="scope">
+            <div>
+              <a class="abtn" @click="showModel('detail',scope.row)">详情</a> |
+              <a class="abtn" @click="showModel('edit',scope.row)">修改</a>
+            </div>
+          </template>
+        </el-table-column>
+      </el-table>
+    </div>
 
-    <el-tree
-      ref="tree2"
-      :data="data2"
-      :props="defaultProps"
-      :filter-node-method="filterNode"
-      class="filter-tree"
-      default-expand-all
-    />
-
+    <el-pagination :page-size="page.size" :total="page.total" style="float: right;margin-right: 2%" layout="prev, pager, next,total" @current-change="handleCurrentChange" @current-page="page.current" />
+    
+    <!--删除对话框-->
+    <el-dialog :visible.sync="deleteDialog" class="deleteDialog" title="删除确认" width="40%">
+      <span style="text-align: center">确认要删除吗?</span>
+      <div slot="footer" class="dialog-footer">
+        <el-button type="primary" @click="remove">确 定</el-button>
+        <el-button @click="deleteDialog = false">取消</el-button>
+      </div>
+    </el-dialog>
   </div>
+
 </template>
 
 <script>
+import classificationApi from '@/api/classificationApi';
+import classficationEntity from '@/entity/classficationEntity';
+import { queryAll } from '@/api/getAllApi';
 export default {
-
   data() {
     return {
-      filterText: '',
-      data2: [{
-        id: 1,
-        label: 'Level one 1',
-        children: [{
-          id: 4,
-          label: 'Level two 1-1',
-          children: [{
-            id: 9,
-            label: 'Level three 1-1-1'
-          }, {
-            id: 10,
-            label: 'Level three 1-1-2'
-          }]
-        }]
-      }, {
-        id: 2,
-        label: 'Level one 2',
-        children: [{
-          id: 5,
-          label: 'Level two 2-1'
-        }, {
-          id: 6,
-          label: 'Level two 2-2'
-        }]
-      }, {
-        id: 3,
-        label: 'Level one 3',
-        children: [{
-          id: 7,
-          label: 'Level two 3-1'
-        }, {
-          id: 8,
-          label: 'Level two 3-2'
-        }]
-      }],
-      defaultProps: {
-        children: 'children',
-        label: 'label'
-      }
-    }
-  },
-  watch: {
-    filterText(val) {
-      this.$refs.tree2.filter(val);
-    }
-  },
+      dialogTitle: '添加',
+      sels: [],
+      importDialog: false,
+      addDialog: false,
+      detailDialog: false,
+      deleteDialog: false,
+      editDialog: false,
+      isEdit: false,
+      tableData: [],
+      model: classficationEntity.model,
+      reset: Object.assign({}, classficationEntity.model),
+      column: classficationEntity.tableColumn,
+      map: {
+        brand_id: {},
+        label_id: {}
+      },
 
-  methods: {
-    filterNode(value, data) {
-      if (!value) return true
-      return data.label.indexOf(value) !== -1;
+      page: {
+        current: 1,
+        map: { name: '' },
+        size: 10,
+        total: 0
+      },
+      rule: {
+        // 根据自己需要添加校验规则
+      }
+    };
+  },
+  async created() {
+    this.reset.modification_user_id = this.$store.getters.token;
+    this.model.modification_user_id = this.$store.getters.token;
+
+    let res = await queryAll('brand');
+    if (res.code === 0) {
+      res.data.forEach(item => {
+        this.map.brand_id[item.id] = item.name;
+      });
+    } else {
+      this.$message.error(res.message);
+    }
+
+    res = await queryAll('label');
+    if (res.code === 0) {
+      res.data.forEach(item => {
+        this.map.label_id[item.id] = item.name;
+      });
+    } else {
+      this.$message.error(res.message);
+    }
+    this.initPageData();
+
+  },
+  methods: {    
+    search() {
+      this.page.current = 1;
+      this.initPageData();
+    },
+    add() {
+      this.addDialog = true;
+      this.dialogTitle = '添加';
+      this.resetForm('form');
+    },
+    remove() {
+      var ids = this.sels.map(item => item.id);
+      classificationApi.batchDelete(ids).then(response => {
+        if (response.code === 0) {
+          this.$message.success('删除成功');
+          this.initPageData(this.page.current);
+          this.deleteDialog = false;
+        } else {
+          this.$message.error('删除失败');
+        }
+      }).catch(() => {
+        this.$message.error('删除失败.');
+      });
+    },
+    // 关闭对话框清除文本框内容
+    dialogClose() {
+      this.resetForm('form');
+    },
+    // 切换页码
+    handleCurrentChange(val) {
+      this.page.current = val;
+      this.initPageData();
+    },
+    // 初始化列表数据
+    initPageData() {
+      classificationApi.queryPageList(this.page).then(response => {
+        this.tableData = [];
+        if (response.code === 0) {
+          this.page.total = response.data.total;          
+          this.tableData = response.data.records;
+        } else {
+          this.tableData = [];
+          this.page.total = 0;
+        }
+        this.$refs.table.clearSelection();
+      });
+    },
+    showModel(guide, row) {
+      if (guide === 'detail') {
+        this.isEdit = false;
+        this.detailDialog = true;
+        this.model = Object.assign({}, row);
+      }else if (guide === 'edit') {
+        this.dialogTitle = '修改';
+        this.isEdit = true;
+        this.addDialog = true;
+        this.model = Object.assign({}, row);
+      }      
+    },
+    
+    selsChange(sels) {
+      this.sels = sels;
+    },
+    delGroup() {
+      this.deleteDialog = true;
+    },
+    handleSelCurrentChange(row, event, column) {
+      this.$refs.table.toggleRowSelection(row);
     }
   }
-}
+};
 </script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.search-box {
+  margin: 20px 0 20px 20px;
+  font-size: 16px;
+}
+.table-box {
+  padding: 0 20px 20px 20px;
+}
+.abtn {
+  color: #5e9eff;
+}
+</style>
 

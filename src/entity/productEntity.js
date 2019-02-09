@@ -43,6 +43,10 @@ const userInfo = {
       prop: 'label_id'
     },
     {
+      label: '是否主产品',
+      prop: 'is_main'
+    },    
+    {
       label: '规格',
       prop: 'specifications'
     }    

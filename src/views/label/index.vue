@@ -102,7 +102,8 @@ export default {
     }
   },
   created() {
-    this.reset.modification_user_id = this.$store.getters.token
+        this.reset.modification_user_id = this.$store.getters.token;
+    this.model.modification_user_id = this.$store.getters.token;
     this.initPageData()
   },
   methods: {
