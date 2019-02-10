@@ -96,7 +96,7 @@
 <script>
 import classificationApi from '@/api/classificationApi';
 import classficationEntity from '@/entity/classficationEntity';
-import { queryAll } from '@/api/getAllApi';
+import { queryAll } from '@/api/common';
 export default {
   data() {
     return {
@@ -218,7 +218,7 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
-      }else if (guide === 'edit') {
+      } else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
         this.addDialog = true;
@@ -229,11 +229,11 @@ export default {
       this.$refs[formName].validate((valid) => {
         if (valid) {
           const sendData = Object.assign({}, this.model);
-            for (const key in sendData) {
-              if (this.map[key]) {
-                sendData[key] = sendData[key].join(',');
-              }
+          for (const key in sendData) {
+            if (this.map[key]) {
+              sendData[key] = sendData[key].join(',');
             }
+          }
           if (this.isEdit) { // 编辑
             classificationApi.update(sendData).then(response => {
               if (response.code === 0) {

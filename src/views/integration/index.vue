@@ -92,7 +92,7 @@
 <script>
 import classificationApi from '@/api/classificationApi';
 import classficationEntity from '@/entity/classficationEntity';
-import { queryAll } from '@/api/getAllApi';
+import { queryAll } from '@/api/common';
 export default {
   data() {
     return {

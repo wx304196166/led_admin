@@ -22,9 +22,16 @@ import Layout from '../views/layout/Layout';
     breadcrumb: false            if false, the item will hidden in breadcrumb(default is true)
   }
 **/
-export const constantRouterMap = [
-  { path: '/login', component: () => import('@/views/login/index'), hidden: true },
-  { path: '/404', component: () => import('@/views/404'), hidden: true },
+export const constantRouterMap = [{
+    path: '/login',
+    component: () => import('@/views/login/index'),
+    hidden: true
+  },
+  {
+    path: '/404',
+    component: () => import('@/views/404'),
+    hidden: true
+  },
 
   {
     path: '/',
@@ -43,76 +50,104 @@ export const constantRouterMap = [
     component: Layout,
     redirect: '/product/label',
     name: 'products',
-    meta: { title: '产品维护', icon: 'nested' },
-    children: [
-      {
+    meta: {
+      title: '产品维护',
+      icon: 'nested'
+    },
+    children: [{
         path: 'classification',
         name: 'Classification',
         component: () => import('@/views/classification/index'),
-        meta: { title: '分类管理' }
+        meta: {
+          title: '分类管理'
+        }
       },
       {
         path: 'label',
         name: 'Label',
         component: () => import('@/views/label/index'),
-        meta: { title: '标签管理' }
+        meta: {
+          title: '标签管理'
+        }
       },
       {
         path: 'brand',
         name: 'Brand',
         component: () => import('@/views/brand/index'),
-        meta: { title: '品牌管理' }
+        meta: {
+          title: '品牌管理'
+        }
       },
       {
         path: 'product',
         name: 'Product',
         component: () => import('@/views/product/index'),
-        meta: { title: '产品管理' }
+        meta: {
+          title: '产品管理'
+        }
+      },
+      {
+        path: 'productDetail',
+        name: 'productDetail',
+        component: () => import('@/views/productDetail/index'),
+        meta: {
+          title: '产品详情'
+        },
+        hidden: true
       }
     ]
   },
   {
     path: '/integration',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'maintenance',
-        component: () => import('@/views/integration/index'),
-        meta: { title: '集成方案', icon: 'form' }
+    children: [{
+      path: 'index',
+      name: 'maintenance',
+      component: () => import('@/views/integration/index'),
+      meta: {
+        title: '集成方案',
+        icon: 'form'
       }
-    ]
+    }]
   },
   {
     path: '/maintenance',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'maintenance',
-        component: () => import('@/views/maintenance/index'),
-        meta: { title: '维保管理', icon: 'table' }
+    children: [{
+      path: 'index',
+      name: 'maintenance',
+      component: () => import('@/views/maintenance/index'),
+      meta: {
+        title: '维保管理',
+        icon: 'table'
       }
-    ]
+    }]
   },
   {
     path: '/user',
     component: Layout,
-    children: [
-      {
-        path: 'index',
-        name: 'user',
-        component: () => import('@/views/user/index'),
-        meta: { title: '用户管理', icon: 'user' }
+    children: [{
+      path: 'index',
+      name: 'user',
+      component: () => import('@/views/user/index'),
+      meta: {
+        title: '用户管理',
+        icon: 'user'
       }
-    ]
+    }]
   },
 
-  { path: '*', redirect: '/404', hidden: true }
+  {
+    path: '*',
+    redirect: '/404',
+    hidden: true
+  }
 ];
 
 export default new Router({
   // mode: 'history', //后端支持可开
-  scrollBehavior: () => ({ y: 0 }),
+  scrollBehavior: () => ({
+    y: 0
+  }),
   routes: constantRouterMap
 });
