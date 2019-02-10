@@ -96,7 +96,7 @@
 <script>
 import classificationApi from '@/api/classificationApi';
 import classficationEntity from '@/entity/classficationEntity';
-import { queryAll } from '@/api/getAllApi';
+
 export default {
   data() {
     return {
@@ -130,22 +130,10 @@ export default {
   },
   async created() {
     this.reset.modification_user_id = this.$store.getters.token;
-    let res = await queryAll('brand');
-    if (res.code === 0) {
-      res.data.forEach(item => {
-        this.map.brand_id[item.id] = item.name;
-      });
-    } else {
-      this.$message.error(res.message);
-    }
-
-    res = await queryAll('label');
-    if (res.code === 0) {
-      res.data.forEach(item => {
-        this.map.label_id[item.id] = item.name;
-      });
-    } else {
-      this.$message.error(res.message);
+    this.model.modification_user_id = this.$store.getters.token;
+    const map = sessionStorage.getItem('map');
+    if (map) {
+      this.map = JSON.parse(map);
     }
     this.initPageData();
 
@@ -216,23 +204,24 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
-      }
-      if (guide === 'edit') {
+      } else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
         this.addDialog = true;
         this.model = Object.assign({}, row);
       }
-      if (guide === 'delete') {
-        this.isEdit = false;
-        this.deleteDialog = true;
-      }
     },
     submitForm(formName) {
       this.$refs[formName].validate((valid) => {
         if (valid) {
+          const sendData = Object.assign({}, this.model);
+          for (const key in sendData) {
+            if (this.map[key]) {
+              sendData[key] = sendData[key].join(',');
+            }
+          }
           if (this.isEdit) { // 编辑
-            classificationApi.update(this.model).then(response => {
+            classificationApi.update(sendData).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功');
                 this.initPageData(this.page.current);
@@ -242,15 +231,9 @@ export default {
               }
             }).catch(() => {
               this.$message.error('修改失败.');
-            });
-          } else { // 新增
-            const sendData = Object.assign({}, this.model);
-            for (const key in sendData) {
-              if (this.map[key]) {
-                sendData[key] = sendData[key].join(',');
-              }
-            }
-            classificationApi.create(this.model).then(response => {
+            })
+          } else { // 新增            
+            classificationApi.create(sendData).then(response => {
               if (response.code === 0) {
                 this.$message.success('添加成功');
                 this.initPageData(this.page.current);

@@ -10,16 +10,20 @@ const userInfo = {
     brand_id: '',
     // 所属标签
     label_id: '',
+    // 是否主产品
+    is_main: 0,
     // 产品介绍
     intro: '',
     // 规格
-    specifications: [],
+    specifications: '',
     // 图片列表
     img_list: [],
     // 缩略图
     thumbnail: '',
     // 关联产品列表
-    related_product_list: [],
+    product_id: [],
+    // 产品详情（富文本）
+    detail:'',
     // 修改用户id
     modification_user_id: '',
     // 修改用户类型
@@ -42,6 +46,10 @@ const userInfo = {
       label: '所属标签',
       prop: 'label_id'
     },
+    {
+      label: '是否主产品',
+      prop: 'is_main'
+    },    
     {
       label: '规格',
       prop: 'specifications'

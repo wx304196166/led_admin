@@ -124,7 +124,8 @@ export default {
     }
   },
   created() {
-    this.reset.modification_user_id = this.$store.getters.token
+    this.reset.modification_user_id = this.$store.getters.token;
+    this.model.modification_user_id = this.$store.getters.token;
     this.initPageData()
   },
   methods: {
@@ -176,19 +177,14 @@ export default {
     },
     showModel(guide, row) {
       if (guide === 'detail') {
-        this.isEdit = false
-        this.detailDialog = true
-        this.model = Object.assign({}, row)
-      }
-      if (guide === 'edit') {
-        this.dialogTitle = '修改'
-        this.isEdit = true
-        this.addDialog = true
-        this.model = Object.assign({}, row)
-      }
-      if (guide === 'delete') {
-        this.isEdit = false
-        this.deleteDialog = true
+        this.isEdit = false;
+        this.detailDialog = true;
+        this.model = Object.assign({}, row);
+      }else if (guide === 'edit') {
+        this.dialogTitle = '修改';
+        this.isEdit = true;
+        this.addDialog = true;
+        this.model = Object.assign({}, row);
       }
     },
     submitForm(formName) {

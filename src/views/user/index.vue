@@ -118,6 +118,7 @@ export default {
   created() {
     // 获取当前用户信息
     this.reset.modification_user_id = this.$store.getters.token;
+    this.model.modification_user_id = this.$store.getters.token;
 
     this.initPageData();
   },
@@ -173,16 +174,11 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
-      }
-      if (guide === 'edit') {
+      }else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
         this.addDialog = true;
         this.model = Object.assign({}, row);
-      }
-      if (guide === 'delete') {
-        this.isEdit = false;
-        this.deleteDialog = true;
       }
     },
     submitForm(formName) {

@@ -1,0 +1,328 @@
+<template>
+  <div class="app-container">
+    <el-form ref="form" class="productDetail" :model="model" label-width="80px">
+      <el-form-item label="产品名称" prop="name">
+        <el-input v-model="model.name"></el-input>
+      </el-form-item>
+      <el-form-item label="所属分类" prop="classification_id">
+        <el-select v-model="model.classification_id" placeholder="请选择">
+          <el-option v-for="(val,key) in map.classification_id" :key="key" :value="key" :label="val"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关联品牌" prop="brand_id">
+        <el-select v-model="model.brand_id" placeholder="请选择">
+          <el-option v-for="(val,key) in map.brand_id" :key="key" :value="key" :label="val"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关联标签" prop="label_id">
+        <el-select v-model="model.label_id" placeholder="请选择">
+          <el-option v-for="(val,key) in map.label_id" :key="key" :value="key" :label="val"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="关联产品" prop="label_id">
+        <el-select v-model="model.product_id" multiple placeholder="请选择">
+          <el-option v-for="(val,key) in map.product_id" :key="key" :value="key" :label="val"></el-option>
+        </el-select>
+      </el-form-item>
+      <el-form-item label="是主产品">
+        <el-switch v-model="model.is_main"></el-switch>
+      </el-form-item>
+      <el-alert v-show="alert.specifications" class="alert" title="填写注意事项" type="warning" description="格式为：300*200 。若为主产品可以填写多个规格，用英文逗号分隔：300*200,500*300 。" show-icon>
+      </el-alert>
+      <el-form-item label="产品规格" prop="specifications">
+        <el-input v-model="model.specifications" @focus="alert.specifications=true" @blur="alert.specifications=false" type="textarea"></el-input>
+      </el-form-item>
+      <el-form-item label="产品简介" prop="intro">
+        <el-input v-model="model.intro" type="textarea"></el-input>
+      </el-form-item>
+    </el-form>
+    <ul class="upload">
+      <li class="label">产品展示图</li>
+      <li>
+        <el-upload action="fakeUrl" list-type="picture-card" ref="addImgList" :limit="8" :before-upload="addImgList" :on-exceed="imgsExceed" :auto-upload="false" multiple :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </li>
+    </ul>
+    <ul class="upload">
+      <li class="label">产品缩略图</li>
+      <li>
+        <el-upload action="fakeUrl" list-type="picture-card" ref="addThumbnail" :limit="1" :before-upload="addThumbnail" :on-exceed="thumbnailExceed" :auto-upload="false" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+          <i class="el-icon-plus"></i>
+        </el-upload>
+      </li>
+    </ul>
+
+    <el-dialog :visible.sync="dialogVisible">
+      <img width="100%" :src="dialogImageUrl" alt="">
+    </el-dialog>
+
+    <div>
+      <span class="label tinymce">产品详情</span>
+      <tinymce :height="300" v-model="model.detail" />
+    </div>
+    <el-tooltip placement="top" content="返回顶部">
+      <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="0" transition-name="fade" />
+    </el-tooltip>
+    <ul class="buttons">
+      <li @click="submitForm">提交</li>
+      <li @click="getBack">返回</li>
+    </ul>
+  </div>
+
+</template>
+
+<script>
+import productEntity from '@/entity/productEntity';
+
+import { upload, queryAll } from '@/api/common';
+import productApi from '@/api/productApi';
+
+import Tinymce from '@/components/Tinymce';
+import BackToTop from '@/components/BackToTop'
+
+export default {
+  components: { Tinymce, BackToTop },
+  data() {
+    return {
+      deleteDialog: false,
+      model: productEntity.model,
+      reset: Object.assign({}, productEntity.model),
+      isEdit: 0,
+      map: {
+        classification_id: {},
+        brand_id: {},
+        label_id: {},
+        product_id: {}
+      },
+      rule: {
+        // 根据自己需要添加校验规则
+      },
+      myBackToTopStyle: {
+        right: '50px',
+        bottom: '50px',
+        width: '40px',
+        height: '40px',
+        'border-radius': '4px',
+        'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
+        background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
+      },
+      alert: {
+        specifications: false
+      },
+      // 图片上传
+      dialogImageUrl: '',
+      imageUrl: '',
+      dialogVisible: false,
+      uploadImg: new FormData(),
+      imgs: []
+    };
+  },
+  async created() {
+    this.reset.modification_user_id = this.$store.getters.token;
+    this.model.modification_user_id = this.$store.getters.token;
+    this.isEdit = Number(sessionStorage.getItem('productEditStatus'));
+    if (this.isEdit) {
+      this.model.id = sessionStorage.getItem('productId');
+    }
+
+    const map = sessionStorage.getItem('map');
+    if (map) {
+      this.map = JSON.parse(map);
+    }
+    /* queryAll(classification).then(res => {
+      if (res.code === 0) {
+        res.
+      }
+    }) */
+  },
+  methods: {
+    // 返回产品列表
+    getBack() {
+      this.$confirm('此操作将放弃当前编辑, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$router.push({ path: '/products/product' });
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消'
+        });
+      });
+    },
+    // 图片上传
+    imgsExceed() {
+      this.$message.warning('最多上传8张图片');
+    },
+    thumbnailExceed() {
+      this.$message.warning('最多上传1张图片');
+    },
+    addImgList(file) {
+      this.addImg(file, 5);
+      return false
+    },
+    addThumbnail(file) {
+      this.addImg(file, 1);
+      return false
+    },
+    addImg(file, size) {
+      const isImg = file.type.includes('image')
+      const fitSize = file.size / 1024 / 1024 < size
+
+      if (!fitSize) {
+        this.succ--
+        this.$message.error('单个图片大小不能超过1M');
+      } else if (!isImg) {
+        this.succ--
+        this.$message.error('只能上传图片');
+      } else {
+        this.uploadImg.append('file', file);
+      }
+    },
+    handleRemove(file, fileList, type) {
+      switch (type) {
+        case 'thumbnail': this.imageUrl = ''; break;
+      }
+      /* for (let i = 0; i < this.uploadImg.length; i++) {
+        if(file===this.uploadImg[i]){
+          this.uploadImg.splice(i,1);
+          break
+        }
+      } */
+    },
+    handlePictureCardPreview(file) {
+      this.dialogImageUrl = file.url;
+      this.dialogVisible = true;
+    },
+    async submitProcess() {
+      this.loading = true;
+      this.$refs.addImgList.submit();
+      this.uploadImg.set('id', this.model.id);
+      this.uploadImg.set('type', 'imgs');
+      let res = await upload('product', this.uploadImg);
+      if (res.code === 0) {
+        this.model.img_list = res.data.imgList;
+        this.model.id = res.data.id;
+        this.uploadImg = new FormData();
+      } else {
+        this.$message.error(res.message);
+        return;
+      }
+
+      this.$refs.addThumbnail.submit();
+      this.uploadImg.set('id', this.model.id);
+      this.uploadImg.set('type', 'thumbnail');
+      res = await upload('product', this.uploadImg);
+      if (res.code === 0) {
+        this.model.thumbnail = res.data.imgList[0];
+        this.model.id = res.data.id;
+        this.uploadImg = new FormData();
+      } else {
+        this.$message.error(res.message);
+        return;
+      }
+      const sendData = Object.assign({}, this.model);
+
+      sendData.img_list = sendData.img_list.join(',');
+      sendData.product_id = sendData.product_id.join(',');
+
+      if (this.isEdit) { // 编辑
+        productApi.update(sendData).then(response => {
+          if (response.code === 0) {
+            this.$message.success('修改成功');
+            this.$router.push({ path: '/products/product' });
+          } else {
+            this.$message.error(`修改失败：${response.msg}`);
+          }
+        }).catch(() => {
+          this.$message.error('修改失败.');
+        })
+      } else { // 新增            
+        productApi.create(sendData).then(response => {
+          if (response.code === 0) {
+            this.$message.success('添加成功');
+            this.resetForm();
+          } else {
+            this.$message.error(`添加失败：${response.msg}`);
+          }
+        }).catch(() => {
+          this.$message.error('添加失败.');
+        });
+      }
+    },
+    submitForm() {
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          this.submitProcess();
+        } else {
+          this.$message.error('请检查填写数据.');
+        }
+      })
+    },
+    // 重置
+    resetForm() {
+      this.$refs.form.clearValidate();
+      this.model = Object.assign({}, this.reset);
+    },
+
+    handleSelCurrentChange(row, event, column) {
+      this.$refs.table.toggleRowSelection(row);
+    }
+  }
+};
+</script>
+
+<style rel="stylesheet/scss" lang="scss" scoped>
+.alert {
+  margin-bottom: 20px;
+}
+.label {
+  width: 80px;
+  text-align: right;
+  font-weight: 700;
+  font-size: 14px;
+  color: #606266;
+  margin-right: 12px;
+}
+.upload {
+  display: flex;
+  margin-bottom: 22px;
+}
+.tinymce {
+  margin-bottom: 22px;
+  display: inline-block;
+}
+.buttons {
+  position: fixed;
+  right: 50px;
+  top: calc(50% - 35px);
+
+  > li {
+    writing-mode: vertical-lr;
+    padding: 12px 8px;
+    color: #fafafa;
+    cursor: pointer;
+  }
+  > li:nth-child(1) {
+    border-radius: 4px 4px 0 0;
+    background: #409eff;
+  }
+  > li:nth-child(2) {
+    border-radius: 0 0 4px 4px;
+    background: #f56c6c;
+  }
+}
+</style>
+<style  rel="stylesheet/scss" lang="scss">
+.productDetail {
+  .el-input {
+    width: 203.8px;
+  }
+  .el-textarea {
+    min-width: 203.8px;
+    width: 50%;
+  }
+}
+</style>

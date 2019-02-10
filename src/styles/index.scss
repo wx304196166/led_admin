@@ -21,6 +21,18 @@ html {
   box-sizing: border-box;
 }
 
+ol,
+ul,
+li,
+p {
+  margin: 0;
+  padding: 0;
+}
+
+li {
+  list-style: none;
+}
+
 #app {
   height: 100%;
 }
@@ -76,8 +88,9 @@ a:hover {
 .app-container {
   padding: 20px;
 }
-.search-box{
-  .el-input{
+
+.search-box {
+  .el-input {
     width: 150px;
   }
 }
