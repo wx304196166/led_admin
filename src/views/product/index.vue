@@ -45,8 +45,8 @@
 
 <script>
 import productApi from '@/api/productApi';
-import productEntity from '@/entity/productEntity';
 import { queryAll } from '@/api/common';
+import productEntity from '@/entity/productEntity';
 
 export default {
   data() {
@@ -66,6 +66,10 @@ export default {
         label_id: {},
         product_id: {}
       },
+      classificationMap:{
+        brand_id: {},
+        label_id: {},
+      },
       page: {
         current: 1,
         map: { name: '' },
@@ -74,35 +78,13 @@ export default {
       }
     };
   },
-  async created() {
-    let res = await queryAll('classification');
-    if (res.code === 0) {
-      res.data.forEach(item => {
-        this.map.classification_id[item.id] = item.name;
-      });
-    } else {
-      this.$message.error(res.message);
+  created() {
+    const map = sessionStorage.getItem('map');
+    if (map) {
+      this.map = JSON.parse(map);
     }
-
-    res = await queryAll('brand');
-    if (res.code === 0) {
-      res.data.forEach(item => {
-        this.map.brand_id[item.id] = item.name;
-      });
-    } else {
-      this.$message.error(res.message);
-    }
-
-    res = await queryAll('label');
-    if (res.code === 0) {
-      res.data.forEach(item => {
-        this.map.label_id[item.id] = item.name;
-      });
-    } else {
-      this.$message.error(res.message);
-    }
+    
     this.initPageData();
-
   },
   methods: {
 
@@ -114,7 +96,6 @@ export default {
     toDetail(id = '', isEdit = 0) {
       sessionStorage.setItem('productId', id);
       sessionStorage.setItem('productEditStatus', isEdit);
-      sessionStorage.setItem('productMap', JSON.stringify(this.map));
       this.$router.push({ path: '/products/productDetail' });
     },
     remove() {

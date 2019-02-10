@@ -75,7 +75,7 @@
 <script>
 import productEntity from '@/entity/productEntity';
 
-import { upload } from '@/api/common';
+import { upload, queryAll } from '@/api/common';
 import productApi from '@/api/productApi';
 
 import Tinymce from '@/components/Tinymce';
@@ -118,18 +118,23 @@ export default {
       imgs: []
     };
   },
-  created() {
+  async created() {
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
-
-    this.isEdit = sessionStorage.getItem('productEditStatus');
+    this.isEdit = Number(sessionStorage.getItem('productEditStatus'));
     if (this.isEdit) {
       this.model.id = sessionStorage.getItem('productId');
     }
-    const map = sessionStorage.getItem('productMap');
+
+    const map = sessionStorage.getItem('map');
     if (map) {
       this.map = JSON.parse(map);
     }
+    /* queryAll(classification).then(res => {
+      if (res.code === 0) {
+        res.
+      }
+    }) */
   },
   methods: {
     // 返回产品列表
@@ -196,7 +201,7 @@ export default {
       this.$refs.addImgList.submit();
       this.uploadImg.set('id', this.model.id);
       this.uploadImg.set('type', 'imgs');
-      let res =await upload('product', this.uploadImg);      
+      let res = await upload('product', this.uploadImg);
       if (res.code === 0) {
         this.model.img_list = res.data.imgList;
         this.model.id = res.data.id;
@@ -209,7 +214,7 @@ export default {
       this.$refs.addThumbnail.submit();
       this.uploadImg.set('id', this.model.id);
       this.uploadImg.set('type', 'thumbnail');
-      res =await  upload('product', this.uploadImg);
+      res = await upload('product', this.uploadImg);
       if (res.code === 0) {
         this.model.thumbnail = res.data.imgList[0];
         this.model.id = res.data.id;
@@ -219,7 +224,7 @@ export default {
         return;
       }
       const sendData = Object.assign({}, this.model);
-      
+
       sendData.img_list = sendData.img_list.join(',');
       sendData.product_id = sendData.product_id.join(',');
 
@@ -258,7 +263,7 @@ export default {
     },
     // 重置
     resetForm() {
-      this.$refs.form.clearValidate();      
+      this.$refs.form.clearValidate();
       this.model = Object.assign({}, this.reset);
     },
 
