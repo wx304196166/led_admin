@@ -4,11 +4,12 @@ const classficationInfo = {
     id: '',
     // 名称
     name: '',
-    // 主商品ID
-    main_id: [],
-    // 标签
-    label_id: [],
-    // 备注
+    main_id: '',
+    main_specification: '',
+    main_level: '',
+    main_vertical: '',
+    modification_user_id: '',
+    modification_time: '',
     remark: '',
     // 修改用户id
     modification_user_id: '',
@@ -16,22 +17,24 @@ const classficationInfo = {
     modification_user_type: 0
   },
   tableColumn: [{
-      label: '分类名称',
+      label: '集成名称',
       prop: 'name'
     },
     {
-      label: '关联品牌',
-      prop: 'brand_id',
-      hasMap: true
+      label: '主商品ID',
+      prop: 'main_id'
     },
     {
-      label: '关联标签',
-      prop: 'label_id',
-      hasMap: true
+      label: '规格',
+      prop: 'main_specification'
     },
     {
-      label: '备注信息',
-      prop: 'remark'
+      label: '水平数量',
+      prop: 'main_level'
+    },
+    {
+      label: '垂直数量',
+      prop: 'main_vertical'
     }
   ]
 }

@@ -4,7 +4,7 @@ const index = 'integrate';
  * Created by crit_space on 2018-12-28
  * 项目区间信息表前端api请求接口层.
  */
-const integrateApi = {
+const integrationApi = {
   // 分页查询数据
   queryPageList(data) {
     return request({
@@ -41,4 +41,4 @@ const integrateApi = {
 
 };
 
-export default integrateApi;
+export default integrationApi;
