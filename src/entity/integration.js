@@ -1,4 +1,4 @@
-const classficationInfo = {
+const IngrationInfo = {
   model: {
     // UUID：自动生成
     id: '',
@@ -8,20 +8,17 @@ const classficationInfo = {
     main_specification: '',
     main_level: '',
     main_vertical: '',
-    modification_user_id: '',
-    modification_time: '',
-    remark: '',
     // 修改用户id
     modification_user_id: '',
     // 修改用户类型
     modification_user_type: 0
   },
   tableColumn: [{
-      label: '集成名称',
+      label: '标签名称',
       prop: 'name'
     },
     {
-      label: '主商品ID',
+      label: '主产品id',
       prop: 'main_id'
     },
     {
@@ -29,13 +26,13 @@ const classficationInfo = {
       prop: 'main_specification'
     },
     {
-      label: '水平数量',
+      label: '水平个数',
       prop: 'main_level'
     },
     {
-      label: '垂直数量',
+      label: '垂直个数',
       prop: 'main_vertical'
     }
   ]
-}
-export default classficationInfo
+};
+export default IngrationInfo;
