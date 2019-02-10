@@ -66,10 +66,7 @@ export default {
         label_id: {},
         product_id: {}
       },
-      classificationMap:{
-        brand_id: {},
-        label_id: {},
-      },
+      
       page: {
         current: 1,
         map: { name: '' },

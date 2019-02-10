@@ -5,18 +5,18 @@
         <el-input v-model="model.name"></el-input>
       </el-form-item>
       <el-form-item label="所属分类" prop="classification_id">
-        <el-select v-model="model.classification_id" placeholder="请选择">
+        <el-select v-model="model.classification_id" @change="selClassification" placeholder="请选择">
           <el-option v-for="(val,key) in map.classification_id" :key="key" :value="key" :label="val"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联品牌" prop="brand_id">
         <el-select v-model="model.brand_id" placeholder="请选择">
-          <el-option v-for="(val,key) in map.brand_id" :key="key" :value="key" :label="val"></el-option>
+          <el-option v-for="item in classificationMap[curClassifyId].brand_id" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联标签" prop="label_id">
-        <el-select v-model="model.label_id" placeholder="请选择">
-          <el-option v-for="(val,key) in map.label_id" :key="key" :value="key" :label="val"></el-option>
+        <el-select v-model="model.label_id" multiple placeholder="请选择">
+          <el-option v-for="item in classificationMap[curClassifyId].label_id" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联产品" prop="label_id">
@@ -59,7 +59,7 @@
 
     <div>
       <span class="label tinymce">产品详情</span>
-      <tinymce :height="300" v-model="model.detail" />
+      <tinymce :height="300" v-model="model.detail" :value="detail" />
     </div>
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="0" transition-name="fade" />
@@ -86,6 +86,7 @@ export default {
   data() {
     return {
       deleteDialog: false,
+      detail: '',
       model: productEntity.model,
       reset: Object.assign({}, productEntity.model),
       isEdit: 0,
@@ -95,6 +96,11 @@ export default {
         label_id: {},
         product_id: {}
       },
+      classificationMap: {
+        empty: []
+      },
+      curClassifyId: 'empty',
+
       rule: {
         // 根据自己需要添加校验规则
       },
@@ -130,13 +136,44 @@ export default {
     if (map) {
       this.map = JSON.parse(map);
     }
-    /* queryAll(classification).then(res => {
+    queryAll('classification').then(res => {
       if (res.code === 0) {
-        res.
+        res.data.forEach(item => {
+          const obj = {
+            brand_id: [],
+            label_id: []
+          }
+          let arr = item.brand_id.split(',');
+          arr.forEach(id => {
+            obj.brand_id.push(
+              {
+                id,
+                name: this.map.brand_id[id]
+              }
+            )
+          })
+
+          arr = item.label_id.split(',');
+          arr.forEach(id => {
+            obj.label_id.push(
+              {
+                id,
+                name: this.map.label_id[id]
+              }
+            )
+          })
+          this.classificationMap[item.id] = obj;
+        })
       }
-    }) */
+    })
   },
   methods: {
+    // 选择分类后
+    selClassification(val) {
+      this.curClassifyId = val;
+      this.model.label_id = [];
+      this.model.brand_id = '';
+    },
     // 返回产品列表
     getBack() {
       this.$confirm('此操作将放弃当前编辑, 是否继续?', '提示', {

@@ -116,7 +116,6 @@ export default {
         brand_id: {},
         label_id: {}
       },
-
       page: {
         current: 1,
         map: { name: '' },

@@ -9,7 +9,7 @@ const userInfo = {
     // 所属品牌
     brand_id: '',
     // 所属标签
-    label_id: '',
+    label_id: [],
     // 是否主产品
     is_main: 0,
     // 产品介绍
