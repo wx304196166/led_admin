@@ -27,15 +27,17 @@
           <el-option v-for="(val,key) in map.product_id" :key="key" :value="key" :label="val"></el-option>
         </el-select>
       </el-form-item>
-      <el-alert v-show="alert.specifications" class="alert" title="填写注意事项" type="warning" description="格式为：300*200 。若为主产品可以填写多个规格，用英文逗号分隔：300*200,500*300 。" show-icon>
+      <el-alert class="alert" title="产品规格注意" type="warning" description="格式为：300*200 。若为主产品可以填写多个规格，用英文逗号分隔：300*200,500*300 。" show-icon close-text="知道了">
       </el-alert>
       <el-form-item label="产品规格" prop="specifications">
-        <el-input v-model="model.specifications" @focus="alert.specifications=true" @blur="alert.specifications=false" type="textarea"></el-input>
+        <el-input v-model="model.specifications" type="textarea"></el-input>
       </el-form-item>
       <el-form-item label="产品简介" prop="intro">
         <el-input v-model="model.intro" type="textarea"></el-input>
       </el-form-item>
     </el-form>
+    <el-alert class="alert" title="图片上传注意" type="warning" description="图片最佳比例为 2:1, 产品展示图限 8张，大小不得超过 5M，产品缩略图限 1张，大小不得超过 1M" show-icon close-text="知道了">
+      </el-alert>
     <ul class="upload">
       <li class="label">产品展示图</li>
       <li>
@@ -112,9 +114,6 @@ export default {
         'border-radius': '4px',
         'line-height': '45px', // 请保持与高度一致以垂直居中 Please keep consistent with height to center vertically
         background: '#e7eaf1'// 按钮的背景颜色 The background color of the button
-      },
-      alert: {
-        specifications: false
       },
       // 图片上传
       dialogImageUrl: '',
