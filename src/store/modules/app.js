@@ -1,12 +1,18 @@
 import Cookies from 'js-cookie';
-
+import {
+  err
+} from '@/utils';
+import {
+  queryAllByList
+} from '@/api/common';
 const app = {
   state: {
     sidebar: {
       opened: !+Cookies.get('sidebarStatus'),
       withoutAnimation: false
     },
-    device: 'desktop'
+    device: 'desktop',
+    map: {}
   },
   mutations: {
     TOGGLE_SIDEBAR: state => {
@@ -25,17 +31,40 @@ const app = {
     },
     TOGGLE_DEVICE: (state, device) => {
       state.device = device;
+    },
+    SET_MAP: (state, map) => {
+      state.map = map;
     }
   },
   actions: {
-    ToggleSideBar: ({ commit }) => {
+    ToggleSideBar: ({
+      commit
+    }) => {
       commit('TOGGLE_SIDEBAR');
     },
-    CloseSideBar({ commit }, { withoutAnimation }) {
+    CloseSideBar({
+      commit
+    }, {
+      withoutAnimation
+    }) {
       commit('CLOSE_SIDEBAR', withoutAnimation);
     },
-    ToggleDevice({ commit }, device) {
+    ToggleDevice({
+      commit
+    }, device) {
       commit('TOGGLE_DEVICE', device);
+    },
+    // 获取映射关系
+    SetMap({
+      commit
+    }) {
+      queryAllByList(['brand', 'classification', 'label', 'product', 'customer_user']).then(response => {
+        if (response.code === 0) {
+          commit('SET_MAP', response.data);
+        } else {
+          err(response.message);
+        }
+      })
     }
   }
 };

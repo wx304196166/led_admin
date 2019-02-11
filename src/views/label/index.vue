@@ -80,7 +80,7 @@ export default {
     return {
       dialogTitle: '添加',
       sels: [],
-      importDialog: false,
+      
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,

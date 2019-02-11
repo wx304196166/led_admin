@@ -12,24 +12,27 @@ const maintenanceInfo = {
     modification_user_type: 0
   },
   tableColumn: [{
-      label: '产品ID',
-      prop: 'product_id'
-    },
-    {
-      label: 'sn号',
+      label: 'SN 号码',
       prop: 'sn'
     },
     {
-      label: '合同号',
+      label: '产品名称',
+      prop: 'product_id',
+      hasMap: true
+    },
+    {
+      label: '合同编号',
       prop: 'contract'
     },
     {
       label: '购买日期',
-      prop: 'purchase_date'
+      prop: 'purchase_date',
+      isDate:true
     },
     {
       label: '质保日期',
-      prop: 'warranty_date'
+      prop: 'warranty_date',
+      isDate:true
     },
     {
       label: '质保期限',

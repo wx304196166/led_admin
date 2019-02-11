@@ -16,13 +16,17 @@
       <el-table ref="table" :data="tableData" :border="true" stripe style="width: 100%" @row-click="handleSelCurrentChange" @selection-change="selsChange">
         <el-table-column type="index" label="序号" width="50px" align="center" />
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true" />
-
+        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="item.hasMap">{{getName(scope.row[item.prop],item.prop)}}</span>
+            <span v-else>{{scope.row[item.prop]}}</span>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
-              <a class="abtn" @click="toDetail(scope.row.id,1)">详情</a> |
-              <a class="abtn" @click="toDetail(scope.row.id,0)">修改</a>
+              <!-- <a class="abtn" @click="toDetail(scope.row.id,1)">详情</a> | -->
+              <a class="abtn" @click="toDetail(scope.row.id,1)">修改</a>
             </div>
           </template>
         </el-table-column>
@@ -52,7 +56,7 @@ export default {
   data() {
     return {
       sels: [],
-      importDialog: false,
+      
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -66,7 +70,7 @@ export default {
         label_id: {},
         product_id: {}
       },
-      
+
       page: {
         current: 1,
         map: { name: '' },
@@ -76,15 +80,23 @@ export default {
     };
   },
   created() {
-    const map = sessionStorage.getItem('map');
-    if (map) {
-      this.map = JSON.parse(map);
-    }
-    
+    this.map = this.$store.getters.map;
+    this.map.is_main = ['否', '是'];
     this.initPageData();
   },
   methods: {
-
+    getName(ids, prop) {
+      switch (typeof ids) {
+        case 'string':
+          const arr = [];
+          for (let item of ids.split(',')) {
+            arr.push(this.map[prop][item]);
+          }
+          return arr.join(',');
+        case 'number': return this.map[prop][ids];
+        default: return '';
+      }
+    },
 
     search() {
       this.page.current = 1;
@@ -93,6 +105,7 @@ export default {
     toDetail(id = '', isEdit = 0) {
       sessionStorage.setItem('productId', id);
       sessionStorage.setItem('productEditStatus', isEdit);
+      this.$store.dispatch('SET_MAP');
       this.$router.push({ path: '/products/productDetail' });
     },
     remove() {

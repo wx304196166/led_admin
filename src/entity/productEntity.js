@@ -36,19 +36,23 @@ const userInfo = {
     },
     {
       label: '所属分类',
-      prop: 'classification_id'
+      prop: 'classification_id',
+      hasMap:true
     },
     {
       label: '所属品牌',
-      prop: 'brand_id'
+      prop: 'brand_id',
+      hasMap:true
     },
     {
       label: '所属标签',
-      prop: 'label_id'
+      prop: 'label_id',
+      hasMap:true
     },
     {
       label: '是否主产品',
-      prop: 'is_main'
+      prop: 'is_main',
+      hasMap:true
     },    
     {
       label: '规格',

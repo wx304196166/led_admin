@@ -1,25 +1,40 @@
 <template>
-  <div class="dashboard-container">
-    <div class="dashboard-text">欢迎你：管理员！</div>
+  <div class="dashboard" :style="{minHeight:height}">
+    <panel-group />
+
   </div>
 </template>
 
 <script>
-import { mapGetters } from 'vuex';
-
+import PanelGroup from './components/PanelGroup';
 export default {
-  name: 'Dashboard',  
+  name: 'Dashboard',
+  components: {
+    PanelGroup
+  },
+  data() {
+    return {
+      height: '100%'
+    }
+  },
+  mounted() {
+    this.resize();
+    window.addEventListener('resize', this.resize);
+  },
+  beforeDestroy() {
+    window.removeEventListener('resize', this.resize);
+  },
+  methods: {
+    resize() {
+      this.height = document.body.clientHeight - 50 + 'px';
+    }
+  }
 };
 </script>
 
 <style rel="stylesheet/scss" lang="scss" scoped>
 .dashboard {
-  &-container {
-    margin: 30px;
-  }
-  &-text {
-    font-size: 30px;
-    line-height: 46px;
-  }
+  padding: 32px;
+  background-color: #f0f2f5;
 }
 </style>

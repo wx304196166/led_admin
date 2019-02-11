@@ -2,30 +2,30 @@
   <div class="app-container">
     <el-form ref="form" class="productDetail" :model="model" label-width="80px">
       <el-form-item label="产品名称" prop="name">
-        <el-input v-model="model.name"></el-input>
+        <el-input v-model="model.name" class="single"></el-input>
+      </el-form-item>
+      <el-form-item label="是主产品">
+        <el-switch v-model="model.is_main"></el-switch>
       </el-form-item>
       <el-form-item label="所属分类" prop="classification_id">
-        <el-select v-model="model.classification_id" @change="selClassification" placeholder="请选择">
+        <el-select v-model="model.classification_id" @change="selClassification" class="single" placeholder="请选择">
           <el-option v-for="(val,key) in map.classification_id" :key="key" :value="key" :label="val"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联品牌" prop="brand_id">
-        <el-select v-model="model.brand_id" placeholder="请选择">
+        <el-select v-model="model.brand_id" class="single" placeholder="请选择">
           <el-option v-for="item in classificationMap[curClassifyId].brand_id" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联标签" prop="label_id">
-        <el-select v-model="model.label_id" multiple placeholder="请选择">
+        <el-select v-model="model.label_id" class="multiple" multiple placeholder="请选择">
           <el-option v-for="item in classificationMap[curClassifyId].label_id" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
       <el-form-item label="关联产品" prop="label_id">
-        <el-select v-model="model.product_id" multiple placeholder="请选择">
+        <el-select v-model="model.product_id" :disabled="model.is_main" class="multiple" multiple placeholder="请选择">
           <el-option v-for="(val,key) in map.product_id" :key="key" :value="key" :label="val"></el-option>
         </el-select>
-      </el-form-item>
-      <el-form-item label="是主产品">
-        <el-switch v-model="model.is_main"></el-switch>
       </el-form-item>
       <el-alert v-show="alert.specifications" class="alert" title="填写注意事项" type="warning" description="格式为：300*200 。若为主产品可以填写多个规格，用英文逗号分隔：300*200,500*300 。" show-icon>
       </el-alert>
@@ -39,7 +39,7 @@
     <ul class="upload">
       <li class="label">产品展示图</li>
       <li>
-        <el-upload action="fakeUrl" list-type="picture-card" ref="addImgList" :limit="8" :before-upload="addImgList" :on-exceed="imgsExceed" :auto-upload="false" multiple :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+        <el-upload action="fakeUrl" list-type="picture-card" ref="addImgList" :limit="8" :before-upload="addImgList" :on-exceed="imgsExceed" :file-list="imgs" :auto-upload="false" multiple :on-preview="handlePictureCardPreview" :on-remove="removeImgs">
           <i class="el-icon-plus"></i>
         </el-upload>
       </li>
@@ -47,7 +47,7 @@
     <ul class="upload">
       <li class="label">产品缩略图</li>
       <li>
-        <el-upload action="fakeUrl" list-type="picture-card" ref="addThumbnail" :limit="1" :before-upload="addThumbnail" :on-exceed="thumbnailExceed" :auto-upload="false" :on-preview="handlePictureCardPreview" :on-remove="handleRemove">
+        <el-upload action="fakeUrl" list-type="picture-card" ref="addThumbnail" :limit="1" :before-upload="addThumbnail" :on-exceed="thumbnailExceed" :file-list="thumbnail" :auto-upload="false" :on-preview="handlePictureCardPreview" :on-remove="removeThumbnail">
           <i class="el-icon-plus"></i>
         </el-upload>
       </li>
@@ -59,7 +59,7 @@
 
     <div>
       <span class="label tinymce">产品详情</span>
-      <tinymce :height="300" v-model="model.detail" :value="detail" />
+      <tinymce v-if="showDetail" :height="300" v-model="model.detail" />
     </div>
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="0" transition-name="fade" />
@@ -75,7 +75,7 @@
 <script>
 import productEntity from '@/entity/productEntity';
 
-import { upload, queryAll } from '@/api/common';
+import { upload, queryAll, queryMany } from '@/api/common';
 import productApi from '@/api/productApi';
 
 import Tinymce from '@/components/Tinymce';
@@ -85,11 +85,11 @@ export default {
   components: { Tinymce, BackToTop },
   data() {
     return {
-      deleteDialog: false,
-      detail: '',
+      showDetail: true,
       model: productEntity.model,
-      reset: Object.assign({}, productEntity.model),
+      reset: null,
       isEdit: 0,
+      imgPath: '/upload/product/',
       map: {
         classification_id: {},
         brand_id: {},
@@ -118,54 +118,69 @@ export default {
       },
       // 图片上传
       dialogImageUrl: '',
-      imageUrl: '',
       dialogVisible: false,
       uploadImg: new FormData(),
-      imgs: []
+      imgs: [],
+      thumbnail: []
     };
   },
+  computed: {
+    map() {
+      return this.$store.getters.map;
+    }
+  },
   async created() {
+    this.reset = Object.assign({}, productEntity.model);
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
+    let res = await queryAll('classification');
+    if (res.code === 0) {
+      res.data.forEach(item => {
+        const obj = {
+          brand_id: [],
+          label_id: []
+        }
+        let arr = item.brand_id.split(',');
+        arr.forEach(id => {
+          obj.brand_id.push(
+            {
+              id,
+              name: this.map.brand_id[id]
+            }
+          )
+        })
+
+        arr = item.label_id.split(',');
+        arr.forEach(id => {
+          obj.label_id.push(
+            {
+              id,
+              name: this.map.label_id[id]
+            }
+          )
+        })
+        this.classificationMap[item.id] = obj;
+      })
+    }
     this.isEdit = Number(sessionStorage.getItem('productEditStatus'));
     if (this.isEdit) {
       this.model.id = sessionStorage.getItem('productId');
-    }
-
-    const map = sessionStorage.getItem('map');
-    if (map) {
-      this.map = JSON.parse(map);
-    }
-    queryAll('classification').then(res => {
+      res = await queryMany('product', [this.model.id], 'all');
       if (res.code === 0) {
-        res.data.forEach(item => {
-          const obj = {
-            brand_id: [],
-            label_id: []
-          }
-          let arr = item.brand_id.split(',');
-          arr.forEach(id => {
-            obj.brand_id.push(
-              {
-                id,
-                name: this.map.brand_id[id]
-              }
-            )
-          })
-
-          arr = item.label_id.split(',');
-          arr.forEach(id => {
-            obj.label_id.push(
-              {
-                id,
-                name: this.map.label_id[id]
-              }
-            )
-          })
-          this.classificationMap[item.id] = obj;
+        const data = res.data[0];
+        data.img_list = data.img_list ? data.img_list.split(',') : [];
+        data.label_id = data.label_id ? data.label_id.split(',') : [];
+        data.product_id = data.product_id ? data.product_id.split(',') : [];
+        data.is_main = Boolean(data.is_main);
+        this.curClassifyId = data.classification_id;
+        this.thumbnail = data.thumbnail ? [{ url: this.imgPath + data.thumbnail }] : [];
+        data.img_list.forEach(item => {
+          this.imgs.push({ url: this.imgPath + item });
         })
+
+        this.model = Object.assign({}, data);
       }
-    })
+    }
   },
   methods: {
     // 选择分类后
@@ -218,16 +233,28 @@ export default {
         this.uploadImg.append('file', file);
       }
     },
+    removeImgs(file, fileList) {
+      this.handleRemove(file, fileList, 'imgs');
+    },
+    removeThumbnail(file, fileList) {
+      this.handleRemove(file, fileList, 'thumbnail');
+    },
     handleRemove(file, fileList, type) {
+      if (file.status !== 'success') { return; }
       switch (type) {
-        case 'thumbnail': this.imageUrl = ''; break;
+        case 'thumbnail':
+          this.thumbnail = [];
+          this.model.thumbnail = '';
+          break;
+        case 'imgs':
+          this.model.img_list.forEach((item, index) => {
+            if (this.imgPath + item === file.url) {
+              this.model.img_list.splice(i, 1);
+              return;
+            }
+          })
+          break;
       }
-      /* for (let i = 0; i < this.uploadImg.length; i++) {
-        if(file===this.uploadImg[i]){
-          this.uploadImg.splice(i,1);
-          break
-        }
-      } */
     },
     handlePictureCardPreview(file) {
       this.dialogImageUrl = file.url;
@@ -236,35 +263,44 @@ export default {
     async submitProcess() {
       this.loading = true;
       this.$refs.addImgList.submit();
-      this.uploadImg.set('id', this.model.id);
-      this.uploadImg.set('type', 'imgs');
-      let res = await upload('product', this.uploadImg);
-      if (res.code === 0) {
-        this.model.img_list = res.data.imgList;
-        this.model.id = res.data.id;
+      if (this.uploadImg.has('file')) {
+        this.uploadImg.set('id', this.model.id);
+        this.uploadImg.set('type', 'imgs');
+        let res = await upload('product', this.uploadImg);
+        if (res.code === 0) {
+          if (this.isEdit) {
+            this.model.img_list = this.model.img_list.concat(res.data.imgList);
+          } else {
+            this.model.img_list = res.data.imgList;
+            this.model.id = res.data.productId;
+          }
+        } else {
+          this.$message.error(res.message);
+          return;
+        }
         this.uploadImg = new FormData();
-      } else {
-        this.$message.error(res.message);
-        return;
       }
 
       this.$refs.addThumbnail.submit();
-      this.uploadImg.set('id', this.model.id);
-      this.uploadImg.set('type', 'thumbnail');
-      res = await upload('product', this.uploadImg);
-      if (res.code === 0) {
-        this.model.thumbnail = res.data.imgList[0];
-        this.model.id = res.data.id;
+      if (this.uploadImg.has('file')) {
+        this.uploadImg.set('id', this.model.id);
+        this.uploadImg.set('type', 'thumbnail');
+        res = await upload('product', this.uploadImg);
+        if (res.code === 0) {
+          this.model.thumbnail = res.data.imgList[0];
+        } else {
+          this.$message.error(res.message);
+          return;
+        }
         this.uploadImg = new FormData();
-      } else {
-        this.$message.error(res.message);
-        return;
       }
+
+
       const sendData = Object.assign({}, this.model);
-
       sendData.img_list = sendData.img_list.join(',');
+      sendData.label_id = sendData.label_id.join(',');
       sendData.product_id = sendData.product_id.join(',');
-
+      sendData.is_main = Number(sendData.is_main);
       if (this.isEdit) { // 编辑
         productApi.update(sendData).then(response => {
           if (response.code === 0) {
@@ -302,6 +338,11 @@ export default {
     resetForm() {
       this.$refs.form.clearValidate();
       this.model = Object.assign({}, this.reset);
+      this.$store.dispatch('SET_MAP');
+      this.showDetail = false;
+      this.$nextTick(() => {
+        this.showDetail = true;
+      });
     },
 
     handleSelCurrentChange(row, event, column) {
@@ -354,10 +395,11 @@ export default {
 </style>
 <style  rel="stylesheet/scss" lang="scss">
 .productDetail {
-  .el-input {
+  .single {
     width: 203.8px;
   }
-  .el-textarea {
+  .el-textarea,
+  .multiple {
     min-width: 203.8px;
     width: 50%;
   }

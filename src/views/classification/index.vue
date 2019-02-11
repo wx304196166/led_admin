@@ -102,7 +102,7 @@ export default {
     return {
       dialogTitle: '添加',
       sels: [],
-      importDialog: false,
+      
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -130,10 +130,7 @@ export default {
   async created() {
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
-    const map = sessionStorage.getItem('map');
-    if (map) {
-      this.map = JSON.parse(map);
-    }
+    this.map=this.$store.getters.map;
     this.initPageData();
 
   },

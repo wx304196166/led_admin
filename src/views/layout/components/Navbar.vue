@@ -1,11 +1,12 @@
 <template>
   <el-menu class="navbar" mode="horizontal">
-    <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container"/>
+    <hamburger :toggle-click="toggleSideBar" :is-active="sidebar.opened" class="hamburger-container" />
     <breadcrumb />
     <el-dropdown class="avatar-container" trigger="click">
       <div class="avatar-wrapper">
         <!-- <img :src="avatar+'?imageView2/1/w/80/h/80'" class="user-avatar"> -->
-        <i class="el-icon-caret-bottom"/>
+        欢迎，{{username}}！
+        <i class="el-icon-caret-bottom" />
       </div>
       <el-dropdown-menu slot="dropdown" class="user-dropdown">
         <router-link class="inlineBlock" to="/">
@@ -33,7 +34,7 @@ export default {
   },
   computed: {
     ...mapGetters([
-      'sidebar'
+      'sidebar', 'username'
     ])
   },
   methods: {
@@ -73,9 +74,9 @@ export default {
     right: 35px;
     .avatar-wrapper {
       cursor: pointer;
-      margin-top: 5px;
+      // margin-top: 5px;
       position: relative;
-      line-height: initial;
+      // line-height: initial;
       .user-avatar {
         width: 40px;
         height: 40px;

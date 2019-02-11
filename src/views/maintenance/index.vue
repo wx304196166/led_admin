@@ -2,8 +2,8 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      分类名称
-      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
+      SN号码
+      <el-input v-model="page.map.sn" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
@@ -16,7 +16,13 @@
       <el-table ref="table" :data="tableData" :border="true" stripe style="width: 100%" @row-click="handleSelCurrentChange" @selection-change="selsChange">
         <el-table-column type="index" label="序号" width="50px" align="center" />
         <el-table-column type="selection" width="55" align="center" />
-        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true" />
+        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="item.hasMap">{{map[item.prop][scope.row[item.prop]]}}</span>
+            <span v-else-if="item.isDate">{{formatDate(scope.row[item.prop])}}</span>
+            <span v-else>{{scope.row[item.prop]}}</span>
+          </template>
+        </el-table-column>
         <el-table-column fixed="right" align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
@@ -33,23 +39,25 @@
     <el-dialog :title="dialogTitle" :visible.sync="addDialog" @close="dialogClose">
       <el-form ref="form" :model="model" :rules="rule" label-width="150px" style="width: 80%">
 
-        <el-form-item label="产品ID" prop="product_id">
-          <el-input v-model="model.product_id" placeholder="请输入" />
+        <el-form-item label="产品名称" prop="product_id">
+          <el-select v-model="model.product_id" style="width:100%" placeholder="请选择">
+            <el-option v-for="(val,key) in map.product_id" :key="key" :value="key" :label="val" />
+          </el-select>
         </el-form-item>
-        <el-form-item label="sn号" prop="sn">
+        <el-form-item label="SN 号码" prop="sn">
           <el-input v-model="model.sn" placeholder="请输入" />
         </el-form-item>
-        <el-form-item label="合同号" prop="contract">
+        <el-form-item label="合同编号" prop="contract">
           <el-input v-model="model.contract" placeholder="请输入" />
         </el-form-item>
         <el-form-item label="购买日期" prop="purchase_date">
-          <el-input v-model="model.purchase_date" type="textarea" placeholder="请输入" />
+          <el-date-picker v-model="model.purchase_date" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" />
         </el-form-item>
         <el-form-item label="质保日期" prop="warranty_date">
-          <el-input v-model="model.warranty_date" placeholder="请输入" />
+          <el-date-picker v-model="model.warranty_date" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" />
         </el-form-item>
         <el-form-item label="质保期限" prop="warranty_period">
-          <el-input v-model="model.warranty_period" placeholder="请输入" />
+          <el-input-number v-model="model.warranty_period" :min="0" placeholder="请输入" />
         </el-form-item>
 
       </el-form>
@@ -63,20 +71,20 @@
     <!--查看对话框-->
     <el-dialog :visible.sync="detailDialog" title="查看详细信息" @close="dialogClose">
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
-        <el-form-item label="产品ID" prop="product_id">
-          <el-input v-model="model.product_id" readonly />
+        <el-form-item label="产品名称" prop="product_id">
+          <!-- <el-input :value="map.product_id[model.product_id]" readonly /> -->
         </el-form-item>
-        <el-form-item label="sn号" prop="sn">
+        <el-form-item label="SN 号码" prop="sn">
           <el-input v-model="model.sn" readonly />
         </el-form-item>
-        <el-form-item label="合同号" prop="contract">
+        <el-form-item label="合同编号" prop="contract">
           <el-input v-model="model.contract" readonly />
         </el-form-item>
         <el-form-item label="购买日期" prop="purchase_date">
-          <el-input v-model="model.purchase_date" type="textarea" readonly/>
+          <el-input v-model="model.purchase_date" type="textarea" readonly />
         </el-form-item>
         <el-form-item label="质保日期" prop="warranty_date">
-          <el-input v-model="model.warranty_date" readonly/>
+          <el-input v-model="model.warranty_date" readonly />
         </el-form-item>
         <el-form-item label="质保期限" prop="warranty_period">
           <el-input v-model="model.warranty_period" readonly />
@@ -95,14 +103,14 @@
 
 </template>
 <script>
-import maintenanceApi from '@/api/maintenanceApi'
-import maintenanceEntity from '@/entity/maintenanceEntity'
+import maintenanceApi from '@/api/maintenanceApi';
+import maintenanceEntity from '@/entity/maintenanceEntity';
+import { parseTime } from '@/utils';
 export default {
   data() {
     return {
       dialogTitle: '添加',
       sels: [],
-      importDialog: false,
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -114,7 +122,7 @@ export default {
       column: maintenanceEntity.tableColumn,
       page: {
         current: 1,
-        map: { name: '' },
+        map: { sn: '' },
         size: 10,
         total: 0
       },
@@ -123,12 +131,20 @@ export default {
       }
     }
   },
+  computed: {
+    map() {
+      return this.$store.getters.map;
+    }
+  },
   created() {
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
     this.initPageData()
   },
   methods: {
+    formatDate(date) {
+      return parseTime(date, '{y}-{m}-{d}');
+    },
     search() {
       this.page.current = 1
       this.initPageData()
@@ -180,7 +196,7 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
-      }else if (guide === 'edit') {
+      } else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
         this.addDialog = true;
