@@ -7,7 +7,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">产品数量</div>
-          <count-to :start-val="0" :end-val="number[0]" :duration="1500" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="number[0]" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -18,7 +18,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">方案数量</div>
-          <count-to :start-val="0" :end-val="number[1]" :duration="1500" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="number[1]" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -29,7 +29,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">维保数量</div>
-          <count-to :start-val="0" :end-val="number[2]" :duration="1500" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="number[2]" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>
@@ -40,7 +40,7 @@
         </div>
         <div class="card-panel-description">
           <div class="card-panel-text">客户数量</div>
-          <count-to :start-val="0" :end-val="number[3]" :duration="1500" class="card-panel-num" />
+          <count-to :start-val="0" :end-val="number[3]" :duration="2600" class="card-panel-num" />
         </div>
       </div>
     </el-col>

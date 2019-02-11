@@ -23,7 +23,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="关联产品" prop="label_id">
-        <el-select v-model="model.product_id" :disabled="model.is_main" class="multiple" multiple placeholder="请选择">
+        <el-select v-model="model.product_id" :disabled="!model.is_main" class="multiple" multiple placeholder="请选择">
           <el-option v-for="(val,key) in map.product_id" :key="key" :value="key" :label="val"></el-option>
         </el-select>
       </el-form-item>
@@ -91,13 +91,7 @@ export default {
       model: productEntity.model,
       reset: null,
       isEdit: 0,
-      imgPath: '/upload/product/',
-      map: {
-        classification_id: {},
-        brand_id: {},
-        label_id: {},
-        product_id: {}
-      },
+      imgPath: '/upload/product/',      
       classificationMap: {
         empty: []
       },
