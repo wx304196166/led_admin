@@ -8,7 +8,7 @@ const maintenanceApi = {
   // 分页查询数据
   queryPageList(data) {
     return request({
-      url: '/master/queryPageList/' + index,
+      url: '/api/v1/master/queryPageList/' + index,
       method: 'post',
       data
     });
@@ -16,7 +16,7 @@ const maintenanceApi = {
   // 新增数据
   create(data) {
     return request({
-      url: '/master/create/' + index,
+      url: '/api/v1/master/create/' + index,
       method: 'post',
       data
     });
@@ -24,7 +24,7 @@ const maintenanceApi = {
   // 更新数据
   update(data) {
     return request({
-      url: '/master/update/' + index,
+      url: '/api/v1/master/update/' + index,
       method: 'post',
       data
     });
@@ -33,7 +33,7 @@ const maintenanceApi = {
   // 批量删除
   batchDelete(data) {
     return request({
-      url: '/master/batchDelete/' + index,
+      url: '/api/v1/master/batchDelete/' + index,
       method: 'delete',
       data
     });

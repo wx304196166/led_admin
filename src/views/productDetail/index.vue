@@ -331,7 +331,7 @@ export default {
     resetForm() {
       this.$refs.form.clearValidate();
       this.model = Object.assign({}, this.reset);
-      this.$store.dispatch('SET_MAP');
+      this.$store.dispatch('SetMap');
       this.showDetail = false;
       this.$nextTick(() => {
         this.showDetail = true;

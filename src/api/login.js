@@ -3,7 +3,7 @@ import request from '@/utils/request';
 //登录
 export function login(username, password, type = 0) {
   return request({
-    url: '/common/login',
+    url: '/api/v1/common/login',
     method: 'post',
     data: {
       username,
@@ -15,7 +15,7 @@ export function login(username, password, type = 0) {
 // 获取用户信息
 export function getUserInfo(token, type = 0) {
   return request({
-    url: '/common/getUserInfo',
+    url: '/api/v1/common/getUserInfo',
     method: 'post',
     data: {
       token,
@@ -26,7 +26,7 @@ export function getUserInfo(token, type = 0) {
 // 检查用户名是否存在
 export function checkName(username, type = 0) {
   return request({
-    url: '/common/check',
+    url: '/api/v1/common/check',
     method: 'get',
     params: {
       username,
@@ -43,7 +43,7 @@ export function registerCustom({
   email
 }) {
   return request({
-    url: '/common/createCustomer',
+    url: '/api/v1/common/createCustomer',
     method: 'post',
     data: {
       username,

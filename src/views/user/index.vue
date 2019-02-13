@@ -3,7 +3,7 @@
     <!---查询区域-->
     <div class="search-box">
       用户账号
-      <el-input v-model="page.map.username" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px"/>
+      <el-input v-model="page.map.username" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
@@ -34,19 +34,19 @@
       <el-form ref="form" :model="model" :rules="rule" label-width="150px" style="width: 80%">
 
         <el-form-item label="账号" prop="username">
-          <el-input v-model="model.username" placeholder="请输入账号" />
+          <el-input v-model="model.username" autocomplete="off" placeholder="请输入账号" />
         </el-form-item>
         <el-form-item label="密码" prop="password">
-          <el-input v-model="model.password" type="password" placeholder="请输入密码" />
+          <el-input v-model="model.password" autocomplete="off" type="password" placeholder="请输入密码" />
         </el-form-item>
         <el-form-item label="姓名" prop="real_name">
-          <el-input v-model="model.real_name" placeholder="请输入姓名" />
+          <el-input v-model="model.real_name" autocomplete="off" placeholder="请输入姓名" />
         </el-form-item>
         <el-form-item label="联系电话" prop="phone">
-          <el-input v-model="model.phone" placeholder="请输入联系电话" />
+          <el-input v-model="model.phone" autocomplete="off" placeholder="请输入联系电话" />
         </el-form-item>
         <el-form-item label="邮箱" prop="email">
-          <el-input v-model="model.email" placeholder="请输入邮箱" />
+          <el-input v-model="model.email" autocomplete="off" placeholder="请输入邮箱" />
         </el-form-item>
 
       </el-form>
@@ -62,8 +62,8 @@
       <el-form ref="formDetail" label-width="150px" style="width: 80%">
 
         <el-form-item label="账号" prop="username">
-          <el-input v-model="model.username" readonly/>
-        </el-form-item>        
+          <el-input v-model="model.username" readonly />
+        </el-form-item>
         <el-form-item label="姓名" prop="real_name">
           <el-input v-model="model.real_name" readonly />
         </el-form-item>
@@ -130,7 +130,6 @@ export default {
     add() {
       this.addDialog = true;
       this.dialogTitle = '添加';
-      this.resetForm('form');
     },
     remove() {
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
@@ -166,7 +165,11 @@ export default {
           this.tableData = [];
           this.page.total = 0;
         }
-        this.$refs.table.clearSelection();
+        if (this.$refs.form) {
+          this.$refs.table.clearSelection();
+          this.resetForm('form');
+        }
+
       });
     },
     showModel(guide, row) {
@@ -174,11 +177,12 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
-      }else if (guide === 'edit') {
+      } else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
         this.addDialog = true;
         this.model = Object.assign({}, row);
+        this.model.password = '';
       }
     },
     submitForm(formName) {

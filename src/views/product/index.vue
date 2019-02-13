@@ -105,7 +105,7 @@ export default {
     toDetail(id = '', isEdit = 0) {
       sessionStorage.setItem('productId', id);
       sessionStorage.setItem('productEditStatus', isEdit);
-      this.$store.dispatch('SET_MAP');
+      this.$store.dispatch('SetMap');
       this.$router.push({ path: '/products/productDetail' });
     },
     remove() {

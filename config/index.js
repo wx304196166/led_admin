@@ -8,10 +8,14 @@ module.exports = {
     assetsSubDirectory: 'static',
     assetsPublicPath: '/',
     proxyTable: {
-      '/': {
+      '/api/v1': {
         target: 'http://localhost:7001',
         changeOrigin: true        
-      }      
+      },
+      '/upload': {
+        target: 'http://localhost:7001',
+        changeOrigin: true        
+      }   
     },
 
     // Various Dev Server settings
