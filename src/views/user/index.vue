@@ -196,7 +196,7 @@ export default {
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {
-                this.$message.error(`修改失败：${response.msg}`);
+                this.$message.error(`修改失败：${response.message}`);
               }
             }).catch(() => {
               this.$message.error('修改失败.');
@@ -208,7 +208,7 @@ export default {
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {
-                this.$message.error(`添加失败：${response.msg}`);
+                this.$message.error(`添加失败：${response.message}`);
               }
             }).catch(() => {
               this.$message.error('添加失败.');

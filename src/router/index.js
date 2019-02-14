@@ -48,7 +48,7 @@ export const constantRouterMap = [{
   {
     path: '/products',
     component: Layout,
-    redirect: '/product/label',
+    redirect: '/products/product',
     name: 'products',
     meta: {
       title: '产品维护',

@@ -15,9 +15,6 @@ export default {
     key() {
       return this.$route.name !== undefined ? this.$route.name + +new Date() : this.$route + +new Date();
     }
-  },
-  created() {
-    this.$store.dispatch('SetMap');
   }
 };
 </script>

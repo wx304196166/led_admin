@@ -13,7 +13,6 @@ import router from './router';
 import store from './store';
 
 import '@/icons'; // icon
-import '@/permission'; // permission control
 
 Vue.use(ElementUI, {
   size: 'medium'
@@ -27,3 +26,4 @@ new Vue({
   store,
   render: h => h(App)
 });
+import '@/permission'; // permission control

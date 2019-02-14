@@ -111,7 +111,7 @@ export default {
       tableData: [],
       model: classficationEntity.model,
       reset: Object.assign({}, classficationEntity.model),
-      column: classficationEntity.tableColumn,     
+      column: classficationEntity.tableColumn,
       page: {
         current: 1,
         map: { name: '' },
@@ -136,8 +136,10 @@ export default {
   },
   methods: {
     getName(ids, prop) {
+      if (!ids.length || !prop) { return; }
       const arr = [];
-      for (let item of ids) {
+      for (let i = 0; i < ids.length; i++) {
+        const item = ids[i];
         arr.push(this.map[prop][item]);
       }
       return arr.join(',');
@@ -181,7 +183,7 @@ export default {
           this.page.total = response.data.total;
           response.data.records.forEach(item => {
             for (const key in item) {
-              if (this.map[key]&&key!=='modification_user_id') {
+              if (this.map[key] && key !== 'modification_user_id') {
                 item[key] = item[key].split(',');
               }
             }
@@ -214,7 +216,7 @@ export default {
         if (valid) {
           const sendData = Object.assign({}, this.model);
           for (const key in sendData) {
-            if (this.map[key]&&key!=='modification_user_id') {
+            if (this.map[key] && key !== 'modification_user_id') {
               sendData[key] = sendData[key].join(',');
             }
           }
@@ -226,7 +228,7 @@ export default {
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {
-                this.$message.error(`修改失败：${response.msg}`);
+                this.$message.error(`修改失败：${response.message}`);
               }
             }).catch(() => {
               this.$message.error('修改失败.');
@@ -238,7 +240,7 @@ export default {
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {
-                this.$message.error(`添加失败：${response.msg}`);
+                this.$message.error(`添加失败：${response.message}`);
               }
             }).catch(() => {
               this.$message.error('添加失败.');

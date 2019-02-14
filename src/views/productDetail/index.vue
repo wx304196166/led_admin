@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <div class="app-container" v-loading="loading">
     <el-form ref="form" class="productDetail" :model="model" label-width="80px">
       <el-form-item label="产品名称" prop="name">
         <el-input v-model="model.name" class="single"></el-input>
@@ -37,7 +37,7 @@
       </el-form-item>
     </el-form>
     <el-alert class="alert" title="图片上传注意" type="warning" description="图片最佳比例为 2:1, 产品展示图限 8张，大小不得超过 5M，产品缩略图限 1张，大小不得超过 1M" show-icon close-text="知道了">
-      </el-alert>
+    </el-alert>
     <ul class="upload">
       <li class="label">产品展示图</li>
       <li>
@@ -87,11 +87,13 @@ export default {
   components: { Tinymce, BackToTop },
   data() {
     return {
+      uploadUrl: './api/v1/common/upload/product',
       showDetail: true,
       model: productEntity.model,
       reset: null,
+      loading: false,
       isEdit: 0,
-      imgPath: '/upload/product/',      
+      imgPath: '/upload/product/',
       classificationMap: {
         empty: []
       },
@@ -113,6 +115,7 @@ export default {
       dialogImageUrl: '',
       dialogVisible: false,
       uploadImg: new FormData(),
+      succ: false,
       imgs: [],
       thumbnail: []
     };
@@ -156,6 +159,7 @@ export default {
       })
     }
     this.isEdit = Number(sessionStorage.getItem('productEditStatus'));
+
     if (this.isEdit) {
       this.model.id = sessionStorage.getItem('productId');
       res = await queryMany('product', [this.model.id], 'all');
@@ -217,10 +221,10 @@ export default {
       const fitSize = file.size / 1024 / 1024 < size
 
       if (!fitSize) {
-        this.succ--
+        this.succ = false;
         this.$message.error('单个图片大小不能超过1M');
       } else if (!isImg) {
-        this.succ--
+        this.succ = false;
         this.$message.error('只能上传图片');
       } else {
         this.uploadImg.append('file', file);
@@ -255,39 +259,51 @@ export default {
     },
     async submitProcess() {
       this.loading = true;
+      this.succ = true;
       this.$refs.addImgList.submit();
-      if (this.uploadImg.has('file')) {
-        this.uploadImg.set('id', this.model.id);
-        this.uploadImg.set('type', 'imgs');
-        let res = await upload('product', this.uploadImg);
-        if (res.code === 0) {
-          if (this.isEdit) {
-            this.model.img_list = this.model.img_list.concat(res.data.imgList);
+      if (this.succ) {
+        if (this.uploadImg.has('file')) {
+          this.uploadImg.set('id', this.model.id);
+          this.uploadImg.set('type', 'imgs');
+          const res = await upload('product', this.uploadImg);
+          if (res.code === 0) {
+            if (this.isEdit) {
+              this.model.img_list = this.model.img_list.concat(res.data.imgList);
+            } else {
+              this.model.img_list = res.data.imgList;
+              this.model.id = res.data.productId;
+            }
           } else {
-            this.model.img_list = res.data.imgList;
-            this.model.id = res.data.productId;
+            this.loading = false;
+            this.$message.error(res.message);
+            return;
           }
-        } else {
-          this.$message.error(res.message);
-          return;
         }
-        this.uploadImg = new FormData();
+      } else {
+        this.loading = false;
+        return;
       }
+      this.uploadImg = new FormData();
 
       this.$refs.addThumbnail.submit();
-      if (this.uploadImg.has('file')) {
-        this.uploadImg.set('id', this.model.id);
-        this.uploadImg.set('type', 'thumbnail');
-        res = await upload('product', this.uploadImg);
-        if (res.code === 0) {
-          this.model.thumbnail = res.data.imgList[0];
-        } else {
-          this.$message.error(res.message);
-          return;
+      if (this.succ) {
+        if (this.uploadImg.has('file')) {
+          this.uploadImg.set('id', this.model.id);
+          this.uploadImg.set('type', 'thumbnail');
+          const res = await upload('product', this.uploadImg);
+          if (res.code === 0) {
+            this.model.thumbnail = res.data.imgList[0];
+          } else {
+            this.loading = false;
+            this.$message.error(res.message);
+            return;
+          }
         }
-        this.uploadImg = new FormData();
+      } else {
+        this.loading = false;
+        return;
       }
-
+      this.uploadImg = new FormData();
 
       const sendData = Object.assign({}, this.model);
       sendData.img_list = sendData.img_list.join(',');
@@ -297,10 +313,11 @@ export default {
       if (this.isEdit) { // 编辑
         productApi.update(sendData).then(response => {
           if (response.code === 0) {
+            this.loading = false;
             this.$message.success('修改成功');
             this.$router.push({ path: '/products/product' });
           } else {
-            this.$message.error(`修改失败：${response.msg}`);
+            this.$message.error(`修改失败：${response.message}`);
           }
         }).catch(() => {
           this.$message.error('修改失败.');
@@ -310,8 +327,9 @@ export default {
           if (response.code === 0) {
             this.$message.success('添加成功');
             this.resetForm();
+            this.loading = false;
           } else {
-            this.$message.error(`添加失败：${response.msg}`);
+            this.$message.error(`添加失败：${response.message}`);
           }
         }).catch(() => {
           this.$message.error('添加失败.');
@@ -331,11 +349,12 @@ export default {
     resetForm() {
       this.$refs.form.clearValidate();
       this.model = Object.assign({}, this.reset);
-      this.$store.dispatch('SetMap');
-      this.showDetail = false;
-      this.$nextTick(() => {
-        this.showDetail = true;
-      });
+      this.$store.dispatch('SetMap').then(() => {
+        this.showDetail = false;
+        this.$nextTick(() => {
+          this.showDetail = true;
+        });
+      })
     },
 
     handleSelCurrentChange(row, event, column) {

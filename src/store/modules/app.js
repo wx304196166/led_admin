@@ -58,12 +58,16 @@ const app = {
     SetMap({
       commit
     }) {
-      queryAllByList(['brand', 'classification', 'label', 'product', 'customer_user']).then(response => {
-        if (response.code === 0) {
-          commit('SET_MAP', response.data);
-        } else {
-          err(response.message);
-        }
+      return new Promise((resolve, reject) => {
+        queryAllByList(['brand', 'classification', 'label', 'product', 'customer_user']).then(response => {
+          if (response.code === 0) {
+            commit('SET_MAP', response.data);
+            resolve();
+          } else {            
+            err(response.message);
+            reject();
+          }
+        })
       })
     }
   }

@@ -40,14 +40,15 @@ const productApi = {
     })
   },
 
-  // 批量删除
-  batchDelete(data) {
+  // 删除
+  del(data) {
     return request({
-      url: '/api/v1/master/batchDelete/' + index,
+      url: '/api/v1/master/product/' + index,
       method: 'delete',
       data
     })
   }
+
 
 }
 
