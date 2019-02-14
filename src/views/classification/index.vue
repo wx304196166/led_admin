@@ -149,7 +149,6 @@ export default {
     add() {
       this.addDialog = true;
       this.dialogTitle = '添加';
-      this.resetForm('form');
     },
     remove() {
       var ids = this.sels.map(item => item.id);
@@ -182,7 +181,7 @@ export default {
           this.page.total = response.data.total;
           response.data.records.forEach(item => {
             for (const key in item) {
-              if (this.map[key]) {
+              if (this.map[key]&&key!=='modification_user_id') {
                 item[key] = item[key].split(',');
               }
             }
@@ -215,7 +214,7 @@ export default {
         if (valid) {
           const sendData = Object.assign({}, this.model);
           for (const key in sendData) {
-            if (this.map[key]) {
+            if (this.map[key]&&key!=='modification_user_id') {
               sendData[key] = sendData[key].join(',');
             }
           }

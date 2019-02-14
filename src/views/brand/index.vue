@@ -114,7 +114,6 @@ export default {
     add() {
       this.addDialog = true;
       this.dialogTitle = '添加';
-      this.resetForm('form');
     },
     remove() {
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
