@@ -112,9 +112,8 @@ export default {
       this.initPageData()
     },
     add() {
-      this.addDialog = true
-      this.dialogTitle = '添加'
-      this.resetForm('form')
+      this.addDialog = true;
+      this.dialogTitle = '添加';
     },
     remove() {
       var ids = this.sels.map(item => item.id)// 获取所有选中行的id组成的字符串，以逗号分隔
@@ -150,7 +149,10 @@ export default {
           this.tableData = []
           this.page.total = 0
         }
-        this.$refs.table.clearSelection()
+        if (this.$refs.form) {
+          this.$refs.table.clearSelection();
+          this.resetForm('form');
+        }
       })
     },
     showModel(guide, row) {
@@ -176,9 +178,10 @@ export default {
           if (this.isEdit) { // 编辑
             labelApi.update(this.model).then(response => {
               if (response.code === 0) {
-                this.$message.success('修改成功')
-                this.initPageData(this.page.current)
-                this.addDialog = false
+                this.$message.success('修改成功');
+                this.isEdit = false;
+                this.initPageData(this.page.current);
+                this.addDialog = false;
               } else {
                 this.$message.error(`修改失败：${response.msg}`)
               }

@@ -9,13 +9,15 @@ module.exports = {
     assetsPublicPath: '/',
     proxyTable: {
       '/api/v1': {
-        target: 'http://localhost:7001',
+        // target: 'http://localhost:7001',
+        target:'http://47.105.231.93',
         changeOrigin: true        
       },
       '/upload': {
-        target: 'http://localhost:7001',
+        // target: 'http://localhost:7001',
+        target:'http://47.105.231.93',
         changeOrigin: true        
-      }   
+      } 
     },
 
     // Various Dev Server settings

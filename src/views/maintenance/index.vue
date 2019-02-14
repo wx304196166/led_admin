@@ -188,7 +188,10 @@ export default {
           this.tableData = []
           this.page.total = 0
         }
-        this.$refs.table.clearSelection()
+        if (this.$refs.form) {
+          this.$refs.table.clearSelection();
+          this.resetForm('form');
+        }
       })
     },
     showModel(guide, row) {
@@ -210,8 +213,9 @@ export default {
             maintenanceApi.update(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功');
+                this.isEdit = false;
                 this.initPageData(this.page.current);
-                this.addDialog = false
+                this.addDialog = false;
               } else {
                 this.$message.error(`修改失败：${response.msg}`);
               }

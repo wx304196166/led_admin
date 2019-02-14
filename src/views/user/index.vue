@@ -192,6 +192,7 @@ export default {
             userApi.update(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功');
+                this.isEdit=false;
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {

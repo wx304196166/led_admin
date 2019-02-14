@@ -3,7 +3,7 @@
     <!---查询区域-->
     <div class="search-box">
       品牌名称
-      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px"/>
+      <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
       <el-button type="primary" @click="search">查询</el-button>
       <div style="marginTop: 20px">
         <el-button type="primary" @click="add()">添加
@@ -80,7 +80,7 @@ export default {
     return {
       dialogTitle: '添加',
       sels: [],
-      
+
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -150,7 +150,10 @@ export default {
           this.tableData = [];
           this.page.total = 0;
         }
-        this.$refs.table.clearSelection();
+        if (this.$refs.form) {
+          this.$refs.table.clearSelection();
+          this.resetForm('form');
+        }
       })
     },
     showModel(guide, row) {
@@ -158,7 +161,7 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
-      }else if (guide === 'edit') {
+      } else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
         this.addDialog = true;
@@ -172,6 +175,7 @@ export default {
             brandApi.update(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功');
+                this.isEdit = false;
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {

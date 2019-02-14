@@ -102,7 +102,7 @@ export default {
     return {
       dialogTitle: '添加',
       sels: [],
-      
+
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -111,11 +111,7 @@ export default {
       tableData: [],
       model: classficationEntity.model,
       reset: Object.assign({}, classficationEntity.model),
-      column: classficationEntity.tableColumn,
-      map: {
-        brand_id: {},
-        label_id: {}
-      },
+      column: classficationEntity.tableColumn,     
       page: {
         current: 1,
         map: { name: '' },
@@ -127,10 +123,14 @@ export default {
       }
     };
   },
+  computed: {
+    map() {
+      return this.$store.getters.map;
+    }
+  },
   async created() {
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
-    this.map=this.$store.getters.map;
     this.initPageData();
 
   },
@@ -192,7 +192,10 @@ export default {
           this.tableData = [];
           this.page.total = 0;
         }
-        this.$refs.table.clearSelection();
+        if (this.$refs.form) {
+          this.$refs.table.clearSelection();
+          this.resetForm('form');
+        }
       });
     },
     showModel(guide, row) {
@@ -220,6 +223,7 @@ export default {
             classificationApi.update(sendData).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功');
+                this.isEdit = false;
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {

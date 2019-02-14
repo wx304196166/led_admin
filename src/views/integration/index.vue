@@ -102,6 +102,11 @@ export default {
       }
     }
   },
+  computed: {
+    map() {
+      return this.$store.getters.map;
+    }
+  },
   created() {
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
@@ -151,7 +156,10 @@ export default {
           this.tableData = [];
           this.page.total = 0;
         }
-        this.$refs.table.clearSelection();
+        if (this.$refs.form) {
+          this.$refs.table.clearSelection();
+          this.resetForm('form');
+        }
       })
     },
     showModel(guide, row) {
@@ -173,6 +181,7 @@ export default {
             integrationApi.update(this.model).then(response => {
               if (response.code === 0) {
                 this.$message.success('修改成功');
+                this.isEdit = false;
                 this.initPageData(this.page.current);
                 this.addDialog = false;
               } else {

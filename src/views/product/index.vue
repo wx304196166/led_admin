@@ -56,7 +56,7 @@ export default {
   data() {
     return {
       sels: [],
-      
+
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -64,13 +64,9 @@ export default {
       isEdit: 0,
       tableData: [],
       column: productEntity.tableColumn,
-      map: {
-        classification_id: {},
-        brand_id: {},
-        label_id: {},
-        product_id: {}
+      pageMap: {
+        is_main: ['否', '是']
       },
-
       page: {
         current: 1,
         map: { name: '' },
@@ -79,9 +75,12 @@ export default {
       }
     };
   },
+  computed: {
+    map() {
+      return this.$store.getters.map;
+    }
+  },
   created() {
-    this.map = this.$store.getters.map;
-    this.map.is_main = ['否', '是'];
     this.initPageData();
   },
   methods: {
@@ -93,7 +92,7 @@ export default {
             arr.push(this.map[prop][item]);
           }
           return arr.join(',');
-        case 'number': return this.map[prop][ids];
+        case 'number': return this.pageMap[prop][ids];
         default: return '';
       }
     },
@@ -142,7 +141,9 @@ export default {
           this.tableData = [];
           this.page.total = 0;
         }
-        this.$refs.table.clearSelection();
+        if (this.$refs.table) {
+          this.$refs.table.clearSelection();
+        }
       });
     },
     showModel(guide, row) {
