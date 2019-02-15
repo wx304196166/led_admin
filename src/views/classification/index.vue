@@ -25,8 +25,8 @@
         <el-table-column fixed="right" align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
-              <a class="abtn" @click="showModel('detail',scope.row)">详情</a> |
-              <a class="abtn" @click="showModel('edit',scope.row)">修改</a>
+              <a class="abtn" @click.stop="showModel('detail',scope.row)">详情</a> |
+              <a class="abtn" @click.stop="showModel('edit',scope.row)">修改</a>
             </div>
           </template>
         </el-table-column>

@@ -2,7 +2,7 @@
   <div>
     <!---查询区域-->
     <div class="search-box">
-      集成查询
+      集成方案名称
       <el-input v-model="page.map.name" placeholder="请输入搜索内容" @keypress.enter.native="search" style="margin:0 12px" />
       <el-button type="primary" @click="search">查询</el-button>
       <!-- <div style="marginTop: 20px">

@@ -17,7 +17,7 @@ const classficationInfo = {
     modification_user_type: 0
   },
   tableColumn: [{
-      label: '集成名称',
+      label: '集成方案名称',
       prop: 'name'
     },
     {
