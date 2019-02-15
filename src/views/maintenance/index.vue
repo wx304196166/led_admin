@@ -127,7 +127,12 @@ export default {
         total: 0
       },
       rule: {
-        // 根据自己需要添加校验规则
+        product_id:[{ required: true, trigger: 'change' }],
+        sn: [{ required: true, trigger: 'blur' }],
+        contract: [{ required: true, trigger: 'blur' }],
+        purchase_date: [{ required: true, trigger: 'blur' }],
+        warranty_date: [{ required: true, trigger: 'blur' }],
+        warranty_period: [{ required: true, trigger: 'blur' }]
       }
     }
   },

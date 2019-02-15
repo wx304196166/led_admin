@@ -97,7 +97,7 @@ export default {
         total: 0
       },
       rule: {
-        // 根据自己需要添加校验规则
+        name: [{ required: true, trigger: 'blur' }]
       }
     }
   },

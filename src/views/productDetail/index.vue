@@ -1,6 +1,6 @@
 <template>
   <div class="app-container" v-loading="loading">
-    <el-form ref="form" class="productDetail" :model="model" label-width="80px">
+    <el-form ref="form" class="productDetail" :model="model" label-width="80px" :rules="rule">
       <el-form-item label="产品名称" prop="name">
         <el-input v-model="model.name" class="single"></el-input>
       </el-form-item>
@@ -100,7 +100,12 @@ export default {
       curClassifyId: 'empty',
 
       rule: {
-        // 根据自己需要添加校验规则
+        name:[{ required: true, trigger: 'blur' }],
+        classification_id:[{ required: true, trigger: 'change' }],
+        brand_id:[{ required: true, trigger: 'change' }],
+        label_id:[{ required: true, trigger: 'change' }],
+        specifications:[{ required: true, trigger: 'blur' }],
+        intro:[{ required: true, trigger: 'blur' }]
       },
       myBackToTopStyle: {
         right: '50px',

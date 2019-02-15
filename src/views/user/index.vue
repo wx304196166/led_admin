@@ -111,7 +111,11 @@ export default {
         total: 0
       },
       rule: {
-        // 根据自己需要添加校验规则
+        username: [{ required: true, trigger: 'blur' }],
+        password:[{ required: true, trigger: 'blur' }],
+        real_name: [{ required: true, trigger: 'blur' }],
+        phone: [{ required: true, trigger: 'blur' }],
+        email: [{ required: true, trigger: 'blur' }]
       }
     };
   },
