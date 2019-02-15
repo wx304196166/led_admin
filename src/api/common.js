@@ -20,6 +20,15 @@ export function queryAll(index) {
     method: 'get'
   })
 }
+export function queryOne(index, id) {
+  return request({
+    url: '/api/v1/common/queryOne/' + index,
+    method: 'get',
+    params: {
+      id
+    }
+  })
+}
 export function queryMany(index, ids, range) {
   return request({
     url: '/api/v1/master/queryMany/' + index,

@@ -24,7 +24,7 @@
       </el-form-item>
       <el-form-item label="关联产品" prop="label_id">
         <el-select v-model="model.product_id" :disabled="!model.is_main" class="multiple" multiple placeholder="请选择">
-          <el-option v-for="(val,key) in map.product_id" :key="key" :value="key" :label="val"></el-option>
+          <el-option v-for="(val,key) in map.product_id" :key="key" :disabled="key===model.id" :value="key" :label="val"/>
         </el-select>
       </el-form-item>
       <el-alert class="alert" title="产品规格注意" type="warning" description="格式为：300*200 。若为主产品可以填写多个规格，用英文逗号分隔：300*200,500*300 。" show-icon close-text="知道了">
@@ -77,7 +77,7 @@
 <script>
 import productEntity from '@/entity/productEntity';
 
-import { upload, queryAll, queryMany } from '@/api/common';
+import { upload, queryAll, queryOne } from '@/api/common';
 import productApi from '@/api/productApi';
 
 import Tinymce from '@/components/Tinymce';
@@ -162,9 +162,9 @@ export default {
 
     if (this.isEdit) {
       this.model.id = sessionStorage.getItem('productId');
-      res = await queryMany('product', [this.model.id], 'all');
+      res = await queryOne('product', this.model.id);
       if (res.code === 0) {
-        const data = res.data[0];
+        const data = res.data;
         data.img_list = data.img_list ? data.img_list.split(',') : [];
         data.label_id = data.label_id ? data.label_id.split(',') : [];
         data.product_id = data.product_id ? data.product_id.split(',') : [];
