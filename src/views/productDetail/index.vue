@@ -22,7 +22,7 @@
           <el-option v-for="item in classificationMap[curClassifyId].label_id" :key="item.id" :value="item.id" :label="item.name"></el-option>
         </el-select>
       </el-form-item>
-      <el-form-item label="关联产品" prop="label_id">
+      <el-form-item label="关联产品" prop="product_id">
         <el-select v-model="model.product_id" :disabled="!model.is_main" class="multiple" multiple placeholder="请选择">
           <el-option v-for="(val,key) in map.product_id" :key="key" :disabled="key===model.id" :value="key" :label="val"/>
         </el-select>
