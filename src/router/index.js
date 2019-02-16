@@ -24,12 +24,14 @@ import Layout from '../views/layout/Layout';
 **/
 export const constantRouterMap = [{
     path: '/login',
-    component: () => import('@/views/login/index'),
+    component: () =>
+      import ('@/views/login/index'),
     hidden: true
   },
   {
     path: '/404',
-    component: () => import('@/views/404'),
+    component: () =>
+      import ('@/views/404'),
     hidden: true
   },
 
@@ -41,7 +43,8 @@ export const constantRouterMap = [{
     hidden: true,
     children: [{
       path: 'dashboard',
-      component: () => import('@/views/dashboard/index')
+      component: () =>
+        import ('@/views/dashboard/index')
     }]
   },
 
@@ -55,17 +58,10 @@ export const constantRouterMap = [{
       icon: 'nested'
     },
     children: [{
-        path: 'classification',
-        name: 'Classification',
-        component: () => import('@/views/classification/index'),
-        meta: {
-          title: '分类管理'
-        }
-      },
-      {
         path: 'label',
         name: 'Label',
-        component: () => import('@/views/label/index'),
+        component: () =>
+          import ('@/views/label/index'),
         meta: {
           title: '标签管理'
         }
@@ -73,15 +69,25 @@ export const constantRouterMap = [{
       {
         path: 'brand',
         name: 'Brand',
-        component: () => import('@/views/brand/index'),
+        component: () =>
+          import ('@/views/brand/index'),
         meta: {
           title: '品牌管理'
+        }
+      }, {
+        path: 'classification',
+        name: 'Classification',
+        component: () =>
+          import ('@/views/classification/index'),
+        meta: {
+          title: '分类管理'
         }
       },
       {
         path: 'product',
         name: 'Product',
-        component: () => import('@/views/product/index'),
+        component: () =>
+          import ('@/views/product/index'),
         meta: {
           title: '产品管理'
         }
@@ -89,7 +95,8 @@ export const constantRouterMap = [{
       {
         path: 'productDetail',
         name: 'productDetail',
-        component: () => import('@/views/productDetail/index'),
+        component: () =>
+          import ('@/views/productDetail/index'),
         meta: {
           title: '产品详情'
         },
@@ -103,7 +110,8 @@ export const constantRouterMap = [{
     children: [{
       path: 'index',
       name: 'maintenance',
-      component: () => import('@/views/integration/index'),
+      component: () =>
+        import ('@/views/integration/index'),
       meta: {
         title: '集成方案',
         icon: 'form'
@@ -116,7 +124,8 @@ export const constantRouterMap = [{
     children: [{
       path: 'index',
       name: 'maintenance',
-      component: () => import('@/views/maintenance/index'),
+      component: () =>
+        import ('@/views/maintenance/index'),
       meta: {
         title: '维保管理',
         icon: 'table'
@@ -129,7 +138,8 @@ export const constantRouterMap = [{
     children: [{
       path: 'index',
       name: 'user',
-      component: () => import('@/views/user/index'),
+      component: () =>
+        import ('@/views/user/index'),
       meta: {
         title: '用户管理',
         icon: 'user'
