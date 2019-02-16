@@ -22,7 +22,7 @@
             <span v-else>{{scope.row[item.prop]}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" align="center" label="操作" width="140">
+        <el-table-column align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
               <a class="abtn" @click.stop="showModel('detail',scope.row)">详情</a> |

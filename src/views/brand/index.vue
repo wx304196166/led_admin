@@ -17,7 +17,7 @@
         <el-table-column type="index" label="序号" width="50px" align="center" />
         <el-table-column type="selection" width="55" align="center" />
         <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true" />
-        <el-table-column fixed="right" align="center" label="操作" width="140">
+        <el-table-column align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
               <a class="abtn" @click.stop="showModel('detail',scope.row)">详情</a> |

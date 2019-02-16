@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div class="integration">
     <!---查询区域-->
     <div class="search-box">
       集成方案名称
@@ -15,9 +15,14 @@
     <div class="table-box">
       <el-table ref="table" :data="tableData" :border="true" stripe style="width: 100%" @row-click="handleSelCurrentChange" @selection-change="selsChange">
         <el-table-column type="index" label="序号" width="50px" align="center" />
-        <!-- <el-table-column type="selection" width="55" align="center" /> -->
-        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true" />
-        <el-table-column fixed="right" align="center" label="操作" width="140">
+        <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true">
+          <template slot-scope="scope">
+            <span v-if="item.hasMap">{{map.product_id[scope.row[item.prop]]}}</span>
+            <span v-else>{{scope.row[item.prop]}}</span>
+          </template>
+        </el-table-column>
+
+        <el-table-column align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
               <a class="abtn" @click="showModel('detail',scope.row)">详情</a>
@@ -53,35 +58,51 @@
 
     <!--查看对话框-->
     <el-dialog :visible.sync="detailDialog" title="查看详细信息" @close="dialogClose">
-      <el-form ref="formDetail" label-width="150px" style="width: 80%">
+      <div class="params-table">
+        <el-table :data="table" :span-method="arraySpanMethod" border style="width: 100%" header-row-class-name="table-head">
 
-        <el-form-item label="主商品ID" prop="main_id">
-          <el-input v-model="model.main_id" readonly />
-        </el-form-item>
-        <el-form-item label="规格" prop="main_specification">
-          <el-input v-model="model.main_specification" readonly />
-        </el-form-item>
-        <el-form-item label="水平数量" prop="main_level">
-          <el-input v-model="model.main_level" readonly/>
-        </el-form-item>
-        <el-form-item label="垂直数量" prop="main_vertical">
-          <el-input v-model="model.main_vertical" readonly/>
-        </el-form-item>
-      </el-form>
+          <el-table-column prop="classification" label="Classification" />
+          <el-table-column prop="name" label="name" />
+          <!-- <template slot-scope="scope">
+              <el-input v-if="scope.row.isInput" v-model="scope.row.name"></el-input>
+              <span v-else>{{ scope.row.name }}</span>
+            </template> -->
+          <el-table-column prop="brand" label="Brand" />
+          <el-table-column prop="specifications" label="Specifications">
+            <template slot-scope="scope">
+              <span>{{scope.row.specifications[0]}}&nbsp;*&nbsp;{{ scope.row.specifications[1] }}</span>
+            </template>
+          </el-table-column>
+          <el-table-column prop="number" label="Number">
+            <template slot-scope="scope">
+              <span v-if="!(scope.row.isMain||scope.row.isInput)">{{scope.row.number}}</span>
+              <span v-else>{{ level*vertical }}</span>
+            </template>
+          </el-table-column>
+
+          <el-table-column prop="isSize" label="Screen Size" align="center">
+            <template slot-scope="scope">
+              <span class="size">{{ scope.row.specifications[0]*level }}&nbsp;*&nbsp;{{ scope.row.specifications[1]*vertical }}</span>
+            </template>
+          </el-table-column>
+        </el-table>
+      </div>
     </el-dialog>
   </div>
 
 </template>
 
 <script>
-import integrationApi from '@/api/integrationApi'
-import integrationEntity from '@/entity/integrationEntity'
+import integrationApi from '@/api/integrationApi';
+import { queryMany } from '@/api/common';
+
+import integrationEntity from '@/entity/integrationEntity';
 export default {
   data() {
     return {
       dialogTitle: '添加',
       sels: [],
-      
+
       addDialog: false,
       detailDialog: false,
       deleteDialog: false,
@@ -99,7 +120,33 @@ export default {
       },
       rule: {
         // 根据自己需要添加校验规则
-      }
+      },
+      // 恢复集成方案详情部分
+      specMap: {},
+      main: [],
+      curMain: {
+        specifications: [300, 200]
+      },
+      level: 0,
+      vertical: 0,
+      mainId: '',
+      ids: [],
+      relatedListMap: {},
+      lastRow: {},
+      table: [],
+      schemeName: {
+        classification: 'Scheme name',
+        name: '',
+        isInput: true
+      },
+      remarks: {
+        classification: 'Remarks',
+        name: '',
+        isInput: true
+      },
+      relatedList: [],
+      swichDialog: false,
+      list: []
     }
   },
   computed: {
@@ -110,7 +157,7 @@ export default {
   created() {
     this.reset.modification_user_id = this.$store.getters.token;
     this.model.modification_user_id = this.$store.getters.token;
-    this.initPageData()
+    this.initPageData();
   },
   methods: {
     search() {
@@ -166,6 +213,8 @@ export default {
         this.isEdit = false;
         this.detailDialog = true;
         this.model = Object.assign({}, row);
+        this.table = [];
+        this.recover();
       } else if (guide === 'edit') {
         this.dialogTitle = '修改';
         this.isEdit = true;
@@ -210,7 +259,7 @@ export default {
     // 重置
     resetForm(formName) {
       if (!this.isEdit) {
-        this.$refs[formName].clearValidate();
+        // this.$refs[formName].clearValidate();
         this.model = Object.assign({}, this.reset);
       }
     },
@@ -223,6 +272,95 @@ export default {
     },
     handleSelCurrentChange(row, event, column) {
       this.$refs.table.toggleRowSelection(row);
+    },
+    // 恢复集成方案详情
+    async recover() {
+      const data = Object.assign({}, this.model);
+      this.mainId = data.main_id;
+
+      this.level = data.main_level;
+      this.vertical = data.main_vertical;
+      const related = data.related_list ? JSON.parse(data.related_list) : [];
+      this.ids = related.map(item => item.id);
+      this.schemeName.name = data.name;
+      this.remarks.name = data.remark;
+      this.ids.push(this.mainId);
+      const res = await queryMany('product', this.ids);
+      let main;
+      if (res.code === 0) {
+        for (let i = 0; i < res.data.length; i++) {
+          if (this.mainId === res.data[i].id) {
+            main = res.data.splice(i, 1)[0];
+            break;
+          }
+        }
+        res.data.forEach((item, index) => {
+          this.setRelatedListMap(this.map.classification_id[item.classification_id]);
+          const obj = this.setProduct(item);
+          obj.number = related[index].number;
+          this.relatedList.push(obj);
+        })
+      }
+      this.curMain = this.setProduct(main, data.main_specification.split('*'));
+      this.setTable();
+    },
+    setProduct(pro, specification) {
+      return {
+        id: pro.id,
+        name: pro.name,
+        classification: this.map.classification_id[pro.classification_id],
+        brand: this.map.brand_id[pro.brand_id],
+        specifications: specification || pro.specifications.split('*'),
+        isMain: pro.is_main,
+      }
+    },
+    setRelatedListMap(classification) {
+      if (this.relatedListMap[classification]) {
+        this.relatedListMap[classification]++;
+      } else {
+        this.relatedListMap[classification] = 1;
+      }
+    },
+    // 组装表格数据
+    setTable() {
+      let arr = [];
+      arr.push(this.curMain);
+
+      this.relatedList.sort((a, b) => a.classification > b.classification);
+
+      arr = arr.concat(this.relatedList);
+      arr.push(this.schemeName);
+      arr.push(this.remarks);
+      this.table = arr.concat();
+      arr = null;
+    },
+    // 条件合并行或列
+    arraySpanMethod({ row, column, rowIndex, columnIndex }) {
+      if (row.isMain) {
+        if (column.property === 'isSize') {
+          return [this.table.length, 1];
+        }
+      } else if (row.isInput) {
+        if (column.property === 'classification') {
+          return [1, 1];
+        } else if (column.property === 'name') {
+          return [1, 4];
+        }
+        return [0, 0];
+      } else {
+        if (column.property === 'classification') {
+          if (this.lastRow.id !== row.id) {
+            if (this.lastRow.classification === row.classification) {
+              return [0, 0];
+            }
+            this.lastRow = Object.assign({}, row);
+          }
+          return [this.relatedListMap[row.classification], 1];
+        } else if (column.property === 'isSize') {
+          return [0, 0];
+        }
+        return [1, 1];
+      }
     }
   }
 }
@@ -240,4 +378,42 @@ export default {
   color: #5e9eff;
 }
 </style>
-
+<style rel="stylesheet/scss" lang="scss">
+.integration {
+  .el-slider__runway {
+    height: 3px;
+    margin: 18px 0 0;
+  }
+  .el-slider__bar {
+    background-color: rgba(0, 0, 0, 0.4);
+    height: 3px;
+  }
+  .el-slider__button {
+    background: url("../../assets/img/slide.png") no-repeat 0 0;
+    border: none;
+    width: 8px;
+    height: 15px;
+    border-radius: 0;
+  }
+  .el-table_1_column_1 {
+    background-color: #f2f2f2;
+  }
+  .table-head th {
+    background-color: #000;
+    color: #fafafa;
+    font-weight: normal;
+    border-color: #000;
+  }
+  .el-table--enable-row-hover
+    .el-table__body
+    tr:hover
+    > td:not(.el-table_1_column_1) {
+    background-color: transparent;
+  }
+  .el-table--enable-row-hover
+    .el-table__body
+    tr:hover
+    > td.el-table_1_column_1 {
+    background-color: #f2f2f2;
+  }
+}

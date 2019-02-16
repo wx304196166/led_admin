@@ -94,3 +94,7 @@ a:hover {
     width: 150px;
   }
 }
+// 防止el-table 表头错位
+body .el-table th.gutter{
+  display: table-cell!important;
+}
