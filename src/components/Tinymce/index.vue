@@ -49,17 +49,17 @@ export default {
       hasInit: false,
       tinymceId: this.id,
       fullscreen: false,
-      languageTypeList: {
+      /* languageTypeList: {
         'en': 'en',
         'zh': 'zh_CN'
-      }
+      } */
     }
   },
-  computed: {
+  /* computed: {
     language() {
       return this.languageTypeList[this.$store.getters.language]
     }
-  },
+  }, */
   watch: {
     value(val) {
       if (!this.hasChange && this.hasInit) {
@@ -67,10 +67,9 @@ export default {
           window.tinymce.get(this.tinymceId).setContent(val || ''))
       }
     },
-    language() {
-      this.destroyTinymce()
-      this.$nextTick(() => this.initTinymce())
-    }
+    /* language() {
+      this.fresh();
+    } */
   },
   mounted() {
     this.initTinymce()
@@ -88,7 +87,7 @@ export default {
     initTinymce() {
       const _this = this
       window.tinymce.init({
-        language: this.language,
+        language: 'zh_CN',
         selector: `#${this.tinymceId}`,
         height: this.height,
         body_class: 'panel-body ',
@@ -165,6 +164,10 @@ export default {
       if (tinymce) {
         tinymce.destroy()
       }
+    },
+    fresh(){
+this.destroyTinymce()
+      this.$nextTick(() => this.initTinymce())
     },
     setContent(value) {
       window.tinymce.get(this.tinymceId).setContent(value)
