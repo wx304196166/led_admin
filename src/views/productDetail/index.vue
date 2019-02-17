@@ -61,7 +61,7 @@
 
     <div>
       <span class="label tinymce">产品详情</span>
-      <tinymce ref="tinymce" :height="300" v-model="model.detail" />
+      <tinymce v-if="showDetail" :height="300" v-model="model.detail" />
     </div>
     <el-tooltip placement="top" content="返回顶部">
       <back-to-top :custom-style="myBackToTopStyle" :visibility-height="300" :back-position="0" transition-name="fade" />
@@ -106,6 +106,7 @@ export default {
         specifications: [{ required: true, trigger: 'blur' }],
         intro: [{ required: true, trigger: 'blur' }]
       },
+      showDetail: true,
       myBackToTopStyle: {
         right: '50px',
         bottom: '50px',
@@ -357,7 +358,10 @@ export default {
       this.$refs.form.clearValidate();
       this.model = Object.assign({}, this.reset);
       this.$store.dispatch('SetMap').then(() => {
-        this.$refs.tinymce.fresh();
+        this.showDetail = false;
+        this.$nextTick(() => {
+          this.showDetail = true;
+        });
       })
     },
 
