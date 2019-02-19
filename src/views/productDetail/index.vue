@@ -23,7 +23,7 @@
         </el-select>
       </el-form-item>
       <el-form-item label="关联产品" prop="product_id">
-        <el-select v-model="model.product_id" :disabled="!model.is_main" class="multiple" multiple placeholder="请选择">
+        <el-select v-model="model.product_id" class="multiple" multiple placeholder="请选择">
           <el-option v-for="(val,key) in map.product_id" :key="key" :disabled="key===model.id" :value="key" :label="val" />
         </el-select>
       </el-form-item>
