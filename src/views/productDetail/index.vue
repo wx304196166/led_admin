@@ -103,7 +103,7 @@ export default {
         classification_id: [{ required: true, trigger: 'change' }],
         brand_id: [{ required: true, trigger: 'change' }],
         label_id: [{ required: true, trigger: 'change' }],
-        specifications: [{ required: false, trigger: 'blur' }],
+        specifications: [{ required: true, trigger: 'blur' }],
         intro: [{ required: true, trigger: 'blur' }]
       },
       showDetail: true,
@@ -163,9 +163,9 @@ export default {
         this.classificationMap[item.id] = obj;
       })
     }
-    const id = this.$router.query.id;
+    const id = this.$route.query.id;
     if (id) {
-      this.isEdit = true;
+      this.isEdit=true;
       this.model.id = id;
       res = await queryOne('product', this.model.id);
       if (res.code === 0) {
@@ -182,9 +182,9 @@ export default {
 
         this.model = Object.assign({}, data);
       }
-    } else {
-      this.isEdit = false;
-      this.model.id = '';
+    }else{
+      this.isEdit=false;
+      this.model.id='';
     }
   },
   beforeDestroy() {
