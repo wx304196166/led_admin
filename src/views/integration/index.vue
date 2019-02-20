@@ -70,7 +70,8 @@
           <el-table-column prop="brand" label="Brand" />
           <el-table-column prop="specifications" label="Specifications">
             <template slot-scope="scope">
-              <span>{{scope.row.specifications[0]}}&nbsp;*&nbsp;{{ scope.row.specifications[1] }}</span>
+              <span v-if="scope.row.specifications">{{scope.row.specifications[0]}}&nbsp;*&nbsp;{{ scope.row.specifications[1] }}</span>
+              <span v-else>none</span>
             </template>
           </el-table-column>
           <el-table-column prop="number" label="Number">
