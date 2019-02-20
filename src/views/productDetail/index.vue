@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       uploadUrl: './api/v1/common/upload/product',
-      model: productEntity.model,
+      model: Object.assign({}, productEntity.model),
       reset: null,
       loading: false,
       isEdit: 0,
@@ -163,10 +163,10 @@ export default {
         this.classificationMap[item.id] = obj;
       })
     }
-    this.isEdit = Number(sessionStorage.getItem('productEditStatus'));
-
-    if (this.isEdit) {
-      this.model.id = sessionStorage.getItem('productId');
+    const id = this.$router.query.id;
+    if (id) {
+      this.isEdit = true;
+      this.model.id = id;
       res = await queryOne('product', this.model.id);
       if (res.code === 0) {
         const data = res.data;
@@ -182,6 +182,9 @@ export default {
 
         this.model = Object.assign({}, data);
       }
+    } else {
+      this.isEdit = false;
+      this.model.id = '';
     }
   },
   beforeDestroy() {

@@ -22,7 +22,7 @@
         <el-table-column align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
-              <a class="abtn" @click="toDetail(scope.row.id,1)">修改</a> |
+              <a class="abtn" @click="toDetail(scope.row.id)">修改</a> |
               <a class="abtn" @click="delGroup(scope.row)">删除</a>
             </div>
           </template>
@@ -31,7 +31,7 @@
     </div>
 
     <el-pagination :page-size="page.size" :total="page.total" style="float: right;margin-right: 2%" layout="prev, pager, next,total" @current-change="handleCurrentChange" @current-page="page.current" />
-   
+
   </div>
 
 </template>
@@ -84,20 +84,18 @@ export default {
       this.page.current = 1;
       this.initPageData();
     },
-    toDetail(id = '', isEdit = 0) {
-      sessionStorage.setItem('productId', id);
-      sessionStorage.setItem('productEditStatus', isEdit);
+    toDetail(id = '') {
       this.$store.dispatch('SetMap').then(() => {
-        this.$router.push({ path: '/products/productDetail' });
+        this.$router.push({ path: '/products/productDetail', query:{ id } });
       })
     },
     remove(row) {
-      const arr=row.img_list?row.img_list.split(','):[];
-      if(row.thumbnail){arr.push(row.thumbnail);}
-      
-      const sendData={
-        id:row.id,
-        imgs:arr
+      const arr = row.img_list ? row.img_list.split(',') : [];
+      if (row.thumbnail) { arr.push(row.thumbnail); }
+
+      const sendData = {
+        id: row.id,
+        imgs: arr
       };
       productApi.del(sendData).then(response => {
         if (response.code === 0) {
@@ -109,7 +107,7 @@ export default {
       }).catch(() => {
         this.$message.error('删除失败.');
       });
-    },    
+    },
     // 切换页码
     handleCurrentChange(val) {
       this.page.current = val;
@@ -127,7 +125,7 @@ export default {
           this.page.total = 0;
         }
       });
-    },   
+    },
 
     delGroup(row) {
       this.$confirm('此操作将永久删除该条信息, 是否继续?', '提示', {
@@ -136,7 +134,7 @@ export default {
         type: 'warning'
       }).then(() => {
         this.remove(row);
-      }).catch(() => {});
+      }).catch(() => { });
     }
   }
 };
