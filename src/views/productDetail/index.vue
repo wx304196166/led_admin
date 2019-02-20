@@ -104,7 +104,7 @@ export default {
         classification_id:[{ required: true, trigger: 'change' }],
         brand_id:[{ required: true, trigger: 'change' }],
         label_id:[{ required: true, trigger: 'change' }],
-        specifications:[{ required: true, trigger: 'blur' }],
+        specifications:[{ required: false, trigger: 'blur' }],
         intro:[{ required: true, trigger: 'blur' }]
       },
       myBackToTopStyle: {
