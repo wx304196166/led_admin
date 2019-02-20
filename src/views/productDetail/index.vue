@@ -165,7 +165,7 @@ export default {
     }
     const id = this.$route.query.id;
     if (id) {
-      this.isEdit=true;
+      this.isEdit = true;
       this.model.id = id;
       res = await queryOne('product', this.model.id);
       if (res.code === 0) {
@@ -182,9 +182,9 @@ export default {
 
         this.model = Object.assign({}, data);
       }
-    }else{
-      this.isEdit=false;
-      this.model.id='';
+    } else {
+      this.isEdit = false;
+      this.model.id = '';
     }
   },
   beforeDestroy() {
@@ -358,7 +358,6 @@ export default {
     },
     // 重置
     resetForm() {
-      this.$refs.form.clearValidate();
       this.model = Object.assign({}, this.reset);
       this.$store.dispatch('SetMap').then(() => {
         this.showDetail = false;
@@ -366,6 +365,8 @@ export default {
           this.showDetail = true;
         });
       })
+      this.$refs.form.clearValidate();
+
     },
 
     handleSelCurrentChange(row, event, column) {
