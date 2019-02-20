@@ -23,8 +23,8 @@
         </el-select>
       </el-form-item>
       <el-form-item label="关联产品" prop="product_id">
-        <el-select v-model="model.product_id" :disabled="!model.is_main" class="multiple" multiple placeholder="请选择">
-          <el-option v-for="(val,key) in map.product_id" :key="key" :disabled="key===model.id" :value="key" :label="val"/>
+        <el-select v-model="model.product_id" class="multiple" multiple placeholder="请选择">
+          <el-option v-for="(val,key) in map.product_id" :key="key" :disabled="key===model.id" :value="key" :label="val" />
         </el-select>
       </el-form-item>
       <el-alert class="alert" title="产品规格注意" type="warning" description="格式为：300*200 。若为主产品可以填写多个规格，用英文逗号分隔：300*200,500*300 。" show-icon close-text="知道了">
@@ -88,7 +88,6 @@ export default {
   data() {
     return {
       uploadUrl: './api/v1/common/upload/product',
-      showDetail: true,
       model: productEntity.model,
       reset: null,
       loading: false,
@@ -100,13 +99,14 @@ export default {
       curClassifyId: 'empty',
 
       rule: {
-        name:[{ required: true, trigger: 'blur' }],
-        classification_id:[{ required: true, trigger: 'change' }],
-        brand_id:[{ required: true, trigger: 'change' }],
-        label_id:[{ required: true, trigger: 'change' }],
-        specifications:[{ required: false, trigger: 'blur' }],
-        intro:[{ required: true, trigger: 'blur' }]
+        name: [{ required: true, trigger: 'blur' }],
+        classification_id: [{ required: true, trigger: 'change' }],
+        brand_id: [{ required: true, trigger: 'change' }],
+        label_id: [{ required: true, trigger: 'change' }],
+        specifications: [{ required: false, trigger: 'blur' }],
+        intro: [{ required: true, trigger: 'blur' }]
       },
+      showDetail: true,
       myBackToTopStyle: {
         right: '50px',
         bottom: '50px',
@@ -183,6 +183,9 @@ export default {
         this.model = Object.assign({}, data);
       }
     }
+  },
+  beforeDestroy() {
+    this.$refs.form.clearValidate();
   },
   methods: {
     // 选择分类后

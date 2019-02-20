@@ -21,11 +21,12 @@ const classficationInfo = {
       prop: 'name'
     },
     {
-      label: '主商品ID',
-      prop: 'main_id'
+      label: '主商品名称',
+      prop: 'main_id',
+      hasMap:true
     },
     {
-      label: '规格',
+      label: '主商品规格',
       prop: 'main_specification'
     },
     {

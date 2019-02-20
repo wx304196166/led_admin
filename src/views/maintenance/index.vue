@@ -23,7 +23,7 @@
             <span v-else>{{scope.row[item.prop]}}</span>
           </template>
         </el-table-column>
-        <el-table-column fixed="right" align="center" label="操作" width="140">
+        <el-table-column align="center" label="操作" width="140">
           <template slot-scope="scope">
             <div>
               <a class="abtn" @click.stop="showModel('detail',scope.row)">详情</a> |
@@ -57,7 +57,7 @@
           <el-date-picker v-model="model.warranty_date" value-format="yyyy-MM-dd" type="date" placeholder="选择日期" />
         </el-form-item>
         <el-form-item label="质保期限" prop="warranty_period">
-          <el-input-number v-model="model.warranty_period" :min="0" placeholder="请输入" />
+          <el-input v-model="model.warranty_period" placeholder="请输入" />
         </el-form-item>
 
       </el-form>
