@@ -90,7 +90,7 @@ export default {
       uploadUrl: './api/v1/common/upload/product',
       model: Object.assign({}, productEntity.model),
       reset: null,
-      loading: false,
+      loading: true,
       isEdit: 0,
       imgPath: '/upload/product/',
       classificationMap: {
@@ -181,10 +181,12 @@ export default {
         })
 
         this.model = Object.assign({}, data);
+        this.loading = false;
       }
     } else {
       this.isEdit = false;
       this.model.id = '';
+      this.loading = false;
     }
   },
   beforeDestroy() {
