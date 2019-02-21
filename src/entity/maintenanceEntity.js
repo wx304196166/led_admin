@@ -26,13 +26,11 @@ const maintenanceInfo = {
     },
     {
       label: '购买日期',
-      prop: 'purchase_date',
-      isDate:true
+      prop: 'purchase_date'
     },
     {
       label: '质保日期',
-      prop: 'warranty_date',
-      isDate:true
+      prop: 'warranty_date'
     },
     {
       label: '质保期限',

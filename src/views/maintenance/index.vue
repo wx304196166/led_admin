@@ -19,7 +19,6 @@
         <el-table-column v-for="item in column" :key="item.prop" :prop="item.prop" :label="item.label" :show-overflow-tooltip="true">
           <template slot-scope="scope">
             <span v-if="item.hasMap">{{map[item.prop][scope.row[item.prop]]}}</span>
-            <span v-else-if="item.isDate">{{formatDate(scope.row[item.prop])}}</span>
             <span v-else>{{scope.row[item.prop]}}</span>
           </template>
         </el-table-column>
@@ -146,10 +145,7 @@ export default {
     this.model.modification_user_id = this.$store.getters.token;
     this.initPageData()
   },
-  methods: {
-    formatDate(date) {
-      return parseTime(date, '{y}-{m}-{d}');
-    },
+  methods: {    
     search() {
       this.page.current = 1
       this.initPageData()
