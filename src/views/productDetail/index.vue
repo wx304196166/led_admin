@@ -324,9 +324,9 @@ export default {
       if (this.isEdit) { // 编辑
         productApi.update(sendData).then(response => {
           if (response.code === 0) {
-            this.loading = false;
             this.$message.success('修改成功');
             this.$router.push({ path: '/products/product' });
+            this.loading = false;
           } else {
             this.$message.error(`修改失败：${response.message}`);
           }
