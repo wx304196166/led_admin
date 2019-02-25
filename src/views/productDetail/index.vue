@@ -33,7 +33,9 @@
         <el-input v-model="model.specifications" type="textarea"></el-input>
       </el-form-item>
       <el-form-item label="产品简介" prop="intro">
-        <el-input v-model="model.intro" type="textarea"></el-input>
+        <!-- <el-input v-model="model.intro" type="textarea"></el-input> -->
+        <tinymce v-if="showDetail" :height="300" v-model="model.intro" />
+
       </el-form-item>
     </el-form>
     <el-alert class="alert" title="图片上传注意" type="warning" description="图片最佳比例为 2:1, 产品展示图限 8张，大小不得超过 5M，产品缩略图限 1张，大小不得超过 1M" show-icon close-text="知道了">
@@ -259,7 +261,7 @@ export default {
         case 'imgs':
           this.model.img_list.forEach((item, index) => {
             if (this.imgPath + item === file.url) {
-              this.model.img_list.splice(i, 1);
+              this.model.img_list.splice(index, 1);
               return;
             }
           })
